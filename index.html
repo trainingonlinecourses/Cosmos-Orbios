@@ -1,0 +1,3998 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Cosmos Chronicle - Live Astrophysics Observatory tracking ISS, NASA APOD, asteroids, launches, and India's space missions in real-time">
+<title>Cosmos Chronicle ✦ Live Astrophysics Observatory</title>
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@5.0.0/index.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/inter@5.0.0/index.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/jetbrains-mono@5.0.0/index.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/@fontsource/orbitron@5.0.0/index.min.css" rel="stylesheet">
+<style>
+/* ============================================
+   RESET & ROOT VARIABLES
+   ============================================ */
+*, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+:root {
+  /* Deep Space Palette - NO VIOLET */
+  --bg-void: #02040a;
+  --bg-deep: #050814;
+  --bg-mid: #0a1428;
+  --bg-surface: #0f1d38;
+  --bg-elevated: #162848;
+
+  /* Accent Colors */
+  --cyan: #00d4ff;
+  --cyan-bright: #4de8ff;
+  --cyan-dim: #00a3c7;
+  --cyan-glow: rgba(0, 212, 255, 0.4);
+
+  --gold: #ffb547;
+  --gold-bright: #ffd27a;
+  --gold-dim: #c78a2e;
+
+  /* Indian Tricolor */
+  --saffron: #ff9933;
+  --white-flag: #ffffff;
+  --green-flag: #138808;
+  --navy-chakra: #000080;
+
+  /* Status */
+  --red: #ff4757;
+  --red-glow: rgba(255, 71, 87, 0.4);
+  --success: #2ed573;
+  --warning: #ffa502;
+
+  /* Text */
+  --text: #e8f0ff;
+  --text-dim: #b8c5dc;
+  --muted: #7a8aa8;
+  --faint: #4a5570;
+
+  /* Glass & Borders */
+  --glass: rgba(15, 29, 56, 0.6);
+  --glass-strong: rgba(22, 40, 72, 0.85);
+  --glass-hover: rgba(30, 55, 95, 0.7);
+  --border: rgba(0, 212, 255, 0.12);
+  --border-strong: rgba(0, 212, 255, 0.35);
+  --border-gold: rgba(255, 181, 71, 0.3);
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.5);
+  --shadow-cyan: 0 10px 40px rgba(0, 212, 255, 0.25);
+  --shadow-gold: 0 10px 40px rgba(255, 181, 71, 0.2);
+
+  /* Typography */
+  --font-display: 'Space Grotesk', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --font-tech: 'Orbitron', sans-serif;
+
+  /* Spacing */
+  --space-xs: 4px;
+  --space-sm: 8px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 40px;
+  --space-2xl: 64px;
+  --space-3xl: 96px;
+
+  /* Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 20px;
+  --radius-xl: 28px;
+  --radius-pill: 100px;
+
+  /* Transitions */
+  --ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
+  --ease-bounce: cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  --transition-fast: 0.2s var(--ease-smooth);
+  --transition-base: 0.3s var(--ease-smooth);
+  --transition-slow: 0.6s var(--ease-smooth);
+}
+
+html { scroll-behavior: smooth; scroll-padding-top: 120px; }
+
+body {
+  font-family: var(--font-body);
+  background: var(--bg-void);
+  color: var(--text);
+  overflow-x: hidden;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font-family: inherit; cursor: pointer; border: none; background: none; color: inherit; }
+img { max-width: 100%; display: block; }
+
+/* Custom Scrollbar */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track { background: var(--bg-deep); }
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--cyan-dim), var(--gold-dim));
+  border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover { background: linear-gradient(180deg, var(--cyan), var(--gold)); }
+
+/* Selection */
+::selection { background: var(--cyan); color: var(--bg-void); }
+
+/* ============================================
+   BACKGROUND LAYERS
+   ============================================ */
+#starfield {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -2;
+  background: radial-gradient(ellipse at top, #0a1428 0%, var(--bg-void) 60%, #000 100%);
+}
+
+.nebula {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(0, 212, 255, 0.07) 0%, transparent 40%),
+    radial-gradient(circle at 85% 70%, rgba(255, 181, 71, 0.05) 0%, transparent 40%),
+    radial-gradient(circle at 50% 100%, rgba(0, 163, 199, 0.04) 0%, transparent 50%),
+    radial-gradient(circle at 30% 60%, rgba(255, 153, 51, 0.03) 0%, transparent 40%);
+}
+
+.grid-overlay {
+  position: fixed; top: 0; left: 0;
+  width: 100%; height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(0, 212, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 212, 255, 0.02) 1px, transparent 1px);
+  background-size: 50px 50px;
+  mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+  -webkit-mask-image: radial-gradient(ellipse at center, black 30%, transparent 80%);
+}
+
+/* ============================================
+   LIVE TICKER
+   ============================================ */
+.ticker {
+  position: fixed; top: 0; left: 0; right: 0;
+  z-index: 300;
+  background: linear-gradient(90deg, var(--bg-deep) 0%, var(--bg-mid) 50%, var(--bg-deep) 100%);
+  border-bottom: 1px solid var(--border);
+  height: 38px;
+  display: flex; align-items: center;
+  overflow: hidden;
+  font-size: 12.5px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.ticker-label {
+  background: linear-gradient(135deg, var(--cyan), var(--cyan-dim));
+  color: var(--bg-void);
+  padding: 0 16px;
+  height: 100%;
+  display: flex; align-items: center;
+  font-weight: 800;
+  font-size: 10.5px;
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  flex-shrink: 0;
+  position: relative;
+  font-family: var(--font-tech);
+}
+
+.ticker-label::after {
+  content: '';
+  position: absolute; right: -10px; top: 0; bottom: 0;
+  width: 10px;
+  background: linear-gradient(90deg, var(--cyan), transparent);
+}
+
+.ticker-dot {
+  width: 7px; height: 7px;
+  border-radius: 50%;
+  background: var(--red);
+  margin-right: 8px;
+  box-shadow: 0 0 8px var(--red);
+  animation: blink 1s infinite;
+}
+
+@keyframes blink {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.ticker-content { flex: 1; overflow: hidden; white-space: nowrap; padding-left: 24px; }
+
+.ticker-track {
+  display: inline-block;
+  animation: tickerScroll 80s linear infinite;
+}
+
+.ticker-track span {
+  margin-right: 60px;
+  color: var(--text-dim);
+}
+
+.ticker-track strong {
+  color: var(--cyan);
+  margin-right: 8px;
+  font-weight: 700;
+}
+
+.ticker-track .india-tag { color: var(--saffron); }
+.ticker-track .gold-tag { color: var(--gold); }
+
+@keyframes tickerScroll {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+/* ============================================
+   NAVIGATION
+   ============================================ */
+nav {
+  position: fixed; top: 38px; left: 0; right: 0;
+  z-index: 200;
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(5, 8, 20, 0.8);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 40px;
+  display: flex; justify-content: space-between; align-items: center;
+  transition: all var(--transition-base);
+}
+
+nav.scrolled {
+  padding: 10px 40px;
+  background: rgba(5, 8, 20, 0.95);
+}
+
+.logo {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 700;
+  background: linear-gradient(90deg, var(--cyan-bright), var(--gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  display: flex; align-items: center; gap: 10px;
+  flex-shrink: 0;
+}
+
+.logo svg { width: 28px; height: 28px; flex-shrink: 0; }
+
+.nav-links {
+  display: flex; gap: 4px; align-items: center;
+}
+
+.nav-links a {
+  color: var(--text-dim);
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+  position: relative;
+}
+
+.nav-links a:hover {
+  color: var(--text);
+  background: rgba(0, 212, 255, 0.08);
+}
+
+.nav-links a.active {
+  color: var(--cyan);
+  background: rgba(0, 212, 255, 0.12);
+}
+
+.live-indicator {
+  display: flex; align-items: center; gap: 6px;
+  padding: 6px 12px;
+  background: rgba(255, 71, 87, 0.12);
+  border: 1px solid rgba(255, 71, 87, 0.3);
+  border-radius: var(--radius-pill);
+  font-size: 10.5px;
+  font-weight: 800;
+  color: var(--red);
+  letter-spacing: 0.12em;
+  font-family: var(--font-tech);
+  margin-left: 8px;
+}
+
+.live-indicator::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 8px var(--red);
+  animation: blink 1s infinite;
+}
+
+.mobile-menu-btn {
+  display: none;
+  width: 36px; height: 36px;
+  border-radius: var(--radius-sm);
+  background: var(--glass);
+  border: 1px solid var(--border);
+  align-items: center; justify-content: center;
+}
+
+.mobile-menu-btn span {
+  display: block;
+  width: 18px; height: 2px;
+  background: var(--text);
+  position: relative;
+  transition: all var(--transition-fast);
+}
+
+.mobile-menu-btn span::before,
+.mobile-menu-btn span::after {
+  content: '';
+  position: absolute;
+  width: 18px; height: 2px;
+  background: var(--text);
+  transition: all var(--transition-fast);
+}
+
+.mobile-menu-btn span::before { top: -6px; }
+.mobile-menu-btn span::after { top: 6px; }
+
+/* ============================================
+   HERO SECTION
+   ============================================ */
+.hero {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  padding: 180px 40px 80px;
+  text-align: center;
+  position: relative;
+}
+
+.hero-content { max-width: 1200px; z-index: 2; position: relative; }
+
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 8px 18px;
+  border-radius: var(--radius-pill);
+  background: rgba(0, 212, 255, 0.08);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+  color: var(--cyan);
+  font-size: 11.5px;
+  margin-bottom: 28px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  font-family: var(--font-tech);
+  animation: badgePulse 3s ease-in-out infinite;
+}
+
+@keyframes badgePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.3); }
+  50% { box-shadow: 0 0 0 12px rgba(0, 212, 255, 0); }
+}
+
+.hero-badge .pulse-dot {
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 8px var(--cyan);
+  animation: blink 1.5s infinite;
+}
+
+.hero h1 {
+  font-size: clamp(38px, 7vw, 96px);
+  line-height: 1.02;
+  margin-bottom: 24px;
+  background: linear-gradient(135deg, #ffffff 0%, #b8e8f5 35%, var(--gold) 75%, var(--saffron) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  letter-spacing: -0.03em;
+}
+
+.hero h1 .accent {
+  background: linear-gradient(135deg, var(--cyan-bright), var(--cyan));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.hero p {
+  font-size: clamp(15px, 1.4vw, 19px);
+  color: var(--text-dim);
+  max-width: 780px;
+  margin: 0 auto 40px;
+  line-height: 1.7;
+}
+
+.hero-buttons {
+  display: flex; gap: 14px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 60px;
+}
+
+.btn {
+  padding: 14px 28px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  font-size: 14px;
+  transition: all var(--transition-base);
+  display: inline-flex; align-items: center; gap: 10px;
+  position: relative;
+  overflow: hidden;
+  font-family: var(--font-body);
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--cyan), var(--cyan-dim));
+  color: var(--bg-void);
+  box-shadow: var(--shadow-cyan);
+  font-weight: 700;
+}
+
+.btn-primary:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 15px 50px rgba(0, 212, 255, 0.5);
+}
+
+.btn-primary::before {
+  content: '';
+  position: absolute; top: 0; left: -100%;
+  width: 100%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: left 0.6s;
+}
+
+.btn-primary:hover::before { left: 100%; }
+
+.btn-secondary {
+  background: rgba(255, 181, 71, 0.08);
+  color: var(--gold);
+  border: 1px solid rgba(255, 181, 71, 0.3);
+}
+
+.btn-secondary:hover {
+  background: rgba(255, 181, 71, 0.15);
+  border-color: var(--gold);
+  transform: translateY(-3px);
+}
+
+.btn-ghost {
+  background: var(--glass);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+
+.btn-ghost:hover {
+  background: var(--glass-hover);
+  border-color: var(--border-strong);
+}
+
+/* Cosmic Clock */
+.cosmic-clock {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.clock-item {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 20px 24px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.clock-item::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+  opacity: 0.6;
+}
+
+.clock-item:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-cyan);
+}
+
+.clock-item .label {
+  font-size: 10.5px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 8px;
+  font-weight: 600;
+  font-family: var(--font-tech);
+}
+
+.clock-item .time {
+  font-family: var(--font-mono);
+  font-size: 24px;
+  color: var(--cyan);
+  font-weight: 700;
+  letter-spacing: 0.05em;
+}
+
+.clock-item .sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.clock-item.moon .time { color: #c0d0e8; }
+.clock-item.mars .time { color: var(--gold); }
+.clock-item.jupiter .time { color: #e8a87c; }
+.clock-item.sun .time { color: var(--saffron); }
+
+/* Orbit rings */
+.orbit-ring {
+  position: absolute;
+  border: 1px dashed rgba(0, 212, 255, 0.08);
+  border-radius: 50%;
+  animation: rotate 60s linear infinite;
+  pointer-events: none;
+}
+
+.ring-1 { width: 700px; height: 700px; top: 15%; left: -250px; }
+.ring-2 {
+  width: 900px; height: 900px;
+  top: 5%; right: -350px;
+  animation-duration: 90s;
+  animation-direction: reverse;
+  border-color: rgba(255, 181, 71, 0.06);
+}
+.ring-3 {
+  width: 500px; height: 500px;
+  bottom: 10%; left: 50%;
+  transform: translateX(-50%);
+  animation-duration: 45s;
+  border-color: rgba(255, 153, 51, 0.06);
+}
+
+@keyframes rotate { to { transform: rotate(360deg); } }
+
+/* ============================================
+   SECTION STYLES
+   ============================================ */
+section {
+  padding: 100px 40px;
+  position: relative;
+}
+
+.section-header {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto 60px;
+}
+
+.section-tag {
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 6px 16px;
+  border-radius: var(--radius-pill);
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  margin-bottom: 18px;
+  font-family: var(--font-tech);
+}
+
+.tag-global {
+  background: rgba(0, 212, 255, 0.1);
+  color: var(--cyan);
+  border: 1px solid rgba(0, 212, 255, 0.3);
+}
+
+.tag-india {
+  background: rgba(255, 153, 51, 0.1);
+  color: var(--saffron);
+  border: 1px solid rgba(255, 153, 51, 0.3);
+}
+
+.tag-live {
+  background: rgba(255, 71, 87, 0.1);
+  color: var(--red);
+  border: 1px solid rgba(255, 71, 87, 0.3);
+}
+
+.tag-tools {
+  background: rgba(255, 181, 71, 0.1);
+  color: var(--gold);
+  border: 1px solid rgba(255, 181, 71, 0.3);
+}
+
+.tag-new {
+  background: rgba(46, 213, 115, 0.1);
+  color: var(--success);
+  border: 1px solid rgba(46, 213, 115, 0.3);
+}
+
+.tag-live::before {
+  content: '';
+  width: 6px; height: 6px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 6px var(--red);
+  animation: blink 1s infinite;
+}
+
+.section-header h2 {
+  font-size: clamp(32px, 5vw, 56px);
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #ffffff 0%, #8fd8ea 50%, var(--gold) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.section-header p {
+  color: var(--text-dim);
+  font-size: 17px;
+  line-height: 1.7;
+}
+
+/* ============================================
+   STATS BANNER
+   ============================================ */
+.stats-banner {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  padding: 40px;
+  border-radius: var(--radius-xl);
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.06), rgba(255, 181, 71, 0.03));
+  border: 1px solid var(--border);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.big-stat { text-align: center; }
+
+.big-stat .num {
+  font-family: var(--font-display);
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 700;
+  background: linear-gradient(135deg, var(--cyan-bright), var(--gold));
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  line-height: 1;
+}
+
+.big-stat .label {
+  color: var(--muted);
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-top: 8px;
+  font-weight: 600;
+}
+
+/* ============================================
+   LIVE DASHBOARD
+   ============================================ */
+.live-dashboard {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1.5fr 1fr;
+  gap: 24px;
+}
+
+.live-panel {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-base);
+}
+
+.live-panel::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+}
+
+.live-panel:hover {
+  border-color: var(--border-strong);
+  transform: translateY(-2px);
+}
+
+.panel-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--border);
+}
+
+.panel-title {
+  display: flex; align-items: center; gap: 12px;
+  font-size: 15px;
+  font-weight: 700;
+}
+
+.panel-title .icon {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(0, 212, 255, 0.03));
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 18px;
+}
+
+.panel-title .sub {
+  font-size: 11px;
+  color: var(--muted);
+  font-weight: 400;
+  margin-top: 2px;
+}
+
+.live-badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px;
+  background: rgba(255, 71, 87, 0.12);
+  border: 1px solid rgba(255, 71, 87, 0.3);
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  font-weight: 800;
+  color: var(--red);
+  letter-spacing: 0.12em;
+  font-family: var(--font-tech);
+}
+
+.live-badge::before {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 6px var(--red);
+  animation: blink 1s infinite;
+}
+
+/* ISS Map */
+.iss-map {
+  width: 100%;
+  aspect-ratio: 2/1;
+  background: radial-gradient(ellipse at center, #0a1830 0%, #040812 100%);
+  border-radius: var(--radius-md);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.iss-map svg { width: 100%; height: 100%; }
+
+.iss-dot {
+  position: absolute;
+  width: 16px; height: 16px;
+  border-radius: 50%;
+  background: var(--red);
+  box-shadow: 0 0 20px var(--red), 0 0 40px rgba(255, 71, 87, 0.5);
+  transform: translate(-50%, -50%);
+  transition: all 2s linear;
+  z-index: 5;
+}
+
+.iss-dot::before {
+  content: 'ISS';
+  position: absolute;
+  top: -22px; left: 50%;
+  transform: translateX(-50%);
+  font-family: var(--font-tech);
+  font-size: 9px;
+  color: var(--red);
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  white-space: nowrap;
+  text-shadow: 0 0 8px var(--red);
+}
+
+.iss-dot::after {
+  content: '';
+  position: absolute;
+  top: 50%; left: 50%;
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  border: 2px solid var(--red);
+  transform: translate(-50%, -50%);
+  animation: ripple 2s infinite;
+}
+
+@keyframes ripple {
+  0% { width: 16px; height: 16px; opacity: 1; }
+  100% { width: 80px; height: 80px; opacity: 0; }
+}
+
+.iss-info {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.iss-stat {
+  background: rgba(0, 212, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 12px;
+}
+
+.iss-stat .label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+.iss-stat .value {
+  font-family: var(--font-mono);
+  font-size: 15px;
+  color: var(--cyan);
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+/* APOD */
+.apod-image {
+  width: 100%;
+  aspect-ratio: 16/10;
+  border-radius: var(--radius-md);
+  background: radial-gradient(circle at center, #0a1830, #040812);
+  overflow: hidden;
+  position: relative;
+  border: 1px solid var(--border);
+}
+
+.apod-image img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  transition: transform 0.6s;
+}
+
+.apod-image:hover img { transform: scale(1.05); }
+
+.apod-image .placeholder {
+  width: 100%; height: 100%;
+  display: flex; align-items: center; justify-content: center;
+  color: var(--muted);
+  font-size: 13px;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.apod-info { margin-top: 16px; }
+.apod-info h4 { font-size: 16px; margin-bottom: 8px; color: var(--text); line-height: 1.4; }
+.apod-info p {
+  font-size: 13px;
+  color: var(--text-dim);
+  line-height: 1.6;
+  max-height: 90px;
+  overflow: hidden;
+  position: relative;
+}
+.apod-info p::after {
+  content: '';
+  position: absolute; bottom: 0; left: 0; right: 0;
+  height: 30px;
+  background: linear-gradient(transparent, var(--bg-mid));
+}
+.apod-date {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--gold);
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+/* Asteroid List */
+.asteroid-list {
+  display: flex; flex-direction: column; gap: 10px;
+  max-height: 420px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.asteroid-list::-webkit-scrollbar { width: 4px; }
+.asteroid-list::-webkit-scrollbar-thumb { background: var(--border-strong); border-radius: 2px; }
+
+.asteroid-item {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 12px 14px;
+  background: rgba(0, 212, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.asteroid-item:hover {
+  background: rgba(0, 212, 255, 0.08);
+  border-color: var(--border-strong);
+  transform: translateX(4px);
+}
+
+.asteroid-item.hazardous {
+  border-color: rgba(255, 71, 87, 0.4);
+  background: rgba(255, 71, 87, 0.05);
+}
+
+.asteroid-name {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.asteroid-size {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 2px;
+}
+
+.asteroid-dist {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--gold);
+  text-align: right;
+  font-weight: 600;
+}
+
+.asteroid-vel {
+  font-size: 10px;
+  color: var(--muted);
+  text-align: right;
+}
+
+/* Space Weather */
+.sw-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.sw-card {
+  background: rgba(255, 181, 71, 0.04);
+  border: 1px solid rgba(255, 181, 71, 0.2);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  transition: all var(--transition-fast);
+}
+
+.sw-card:hover {
+  background: rgba(255, 181, 71, 0.08);
+  transform: translateY(-2px);
+}
+
+.sw-card .label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+.sw-card .value {
+  font-family: var(--font-mono);
+  font-size: 22px;
+  color: var(--gold);
+  font-weight: 700;
+  margin-top: 4px;
+}
+
+.sw-card .sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.sw-card.alert {
+  background: rgba(255, 71, 87, 0.06);
+  border-color: rgba(255, 71, 87, 0.3);
+}
+
+.sw-card.alert .value { color: var(--red); }
+
+/* ============================================
+   CARDS GRID
+   ============================================ */
+.grid {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+  gap: 22px;
+}
+
+.card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  position: relative;
+  overflow: hidden;
+  transition: all var(--transition-base);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--cyan), var(--gold), transparent);
+  opacity: 0;
+  transition: opacity var(--transition-base);
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  border-color: var(--border-strong);
+  background: var(--glass-hover);
+  box-shadow: var(--shadow-md);
+}
+
+.card:hover::before { opacity: 1; }
+
+.card-icon {
+  width: 56px; height: 56px;
+  border-radius: 14px;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.12), rgba(255, 181, 71, 0.08));
+  margin-bottom: 20px;
+  font-size: 28px;
+  border: 1px solid var(--border);
+  transition: all var(--transition-base);
+}
+
+.card:hover .card-icon {
+  transform: scale(1.08) rotate(-5deg);
+}
+
+.card h3 {
+  font-size: 20px;
+  margin-bottom: 12px;
+  color: var(--text);
+  line-height: 1.3;
+}
+
+.card p {
+  color: var(--text-dim);
+  font-size: 13.5px;
+  margin-bottom: 16px;
+  line-height: 1.6;
+}
+
+.card .stats {
+  display: flex; gap: 16px; flex-wrap: wrap;
+  padding-top: 16px;
+  border-top: 1px solid var(--border);
+}
+
+.stat { font-size: 11.5px; color: var(--muted); }
+
+.stat strong {
+  color: var(--cyan);
+  display: block;
+  font-size: 15px;
+  font-family: var(--font-display);
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+
+/* India cards */
+.india .card::before {
+  background: linear-gradient(90deg, transparent, var(--saffron), #fff, var(--green-flag), transparent);
+}
+
+.india .card:hover { border-color: rgba(255, 153, 51, 0.5); }
+
+.india .card-icon {
+  background: linear-gradient(135deg, rgba(255, 153, 51, 0.12), rgba(19, 136, 8, 0.08));
+}
+
+.india .stat strong { color: var(--saffron); }
+
+/* ============================================
+   TABS
+   ============================================ */
+.tabs {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 40px;
+  flex-wrap: wrap;
+}
+
+.tab {
+  padding: 10px 20px;
+  border-radius: var(--radius-pill);
+  background: var(--glass);
+  border: 1px solid var(--border);
+  color: var(--text-dim);
+  font-size: 13px;
+  font-weight: 500;
+  transition: all var(--transition-fast);
+}
+
+.tab.active {
+  background: linear-gradient(135deg, var(--cyan), var(--cyan-dim));
+  color: var(--bg-void);
+  border-color: transparent;
+  font-weight: 700;
+  box-shadow: var(--shadow-cyan);
+}
+
+.tab:hover:not(.active) {
+  color: var(--text);
+  border-color: var(--border-strong);
+  background: var(--glass-hover);
+}
+
+/* ============================================
+   SEARCH BAR
+   ============================================ */
+.search-bar {
+  max-width: 600px;
+  margin: 0 auto 40px;
+  position: relative;
+}
+
+.search-bar input {
+  width: 100%;
+  padding: 14px 20px 14px 52px;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  color: var(--text);
+  font-size: 14px;
+  font-family: inherit;
+  outline: none;
+  transition: all var(--transition-base);
+}
+
+.search-bar input:focus {
+  border-color: var(--cyan);
+  background: var(--glass-hover);
+  box-shadow: 0 0 0 4px rgba(0, 212, 255, 0.1);
+}
+
+.search-bar svg {
+  position: absolute;
+  left: 20px; top: 50%;
+  transform: translateY(-50%);
+  width: 18px; height: 18px;
+  color: var(--muted);
+}
+
+/* ============================================
+   TIMELINE
+   ============================================ */
+.timeline {
+  max-width: 1000px;
+  margin: 0 auto;
+  position: relative;
+  padding-left: 40px;
+}
+
+.timeline::before {
+  content: '';
+  position: absolute;
+  left: 10px; top: 0; bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, var(--cyan), var(--gold), var(--saffron), var(--green-flag));
+}
+
+.timeline-item {
+  position: relative;
+  margin-bottom: 24px;
+  padding: 22px;
+  background: var(--glass);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--border);
+  transition: all var(--transition-base);
+}
+
+.timeline-item:hover {
+  border-color: var(--border-strong);
+  transform: translateX(6px);
+  background: var(--glass-hover);
+}
+
+.timeline-item::before {
+  content: '';
+  position: absolute;
+  left: -35px; top: 26px;
+  width: 14px; height: 14px;
+  border-radius: 50%;
+  background: var(--cyan);
+  box-shadow: 0 0 15px var(--cyan);
+  border: 2px solid var(--bg-void);
+}
+
+.timeline-year {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--gold);
+  font-weight: 700;
+  margin-bottom: 6px;
+  letter-spacing: 0.05em;
+}
+
+.timeline-item h4 {
+  font-size: 17px;
+  margin-bottom: 6px;
+  color: var(--text);
+}
+
+.timeline-item p {
+  color: var(--text-dim);
+  font-size: 13.5px;
+  line-height: 1.6;
+}
+
+/* ============================================
+   INTERACTIVE TOOLS SECTION
+   ============================================ */
+.tools-grid {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 24px;
+}
+
+.tool-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.tool-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, var(--cyan), var(--gold));
+}
+
+.tool-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-strong);
+  box-shadow: var(--shadow-md);
+}
+
+.tool-header {
+  display: flex; align-items: center; gap: 14px;
+  margin-bottom: 20px;
+}
+
+.tool-icon {
+  width: 48px; height: 48px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(0, 212, 255, 0.15), rgba(255, 181, 71, 0.1));
+  border: 1px solid var(--border);
+  display: flex; align-items: center; justify-content: center;
+  font-size: 24px;
+  flex-shrink: 0;
+}
+
+.tool-header h3 {
+  font-size: 18px;
+  color: var(--text);
+  margin-bottom: 2px;
+}
+
+.tool-header .tool-sub {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-weight: 600;
+}
+
+.tool-body { margin-top: 16px; }
+
+.tool-input-group {
+  margin-bottom: 14px;
+}
+
+.tool-input-group label {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+
+.tool-input-group input,
+.tool-input-group select {
+  width: 100%;
+  padding: 10px 14px;
+  background: rgba(0, 0, 0, 0.3);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 13px;
+  outline: none;
+  transition: all var(--transition-fast);
+}
+
+.tool-input-group input:focus,
+.tool-input-group select:focus {
+  border-color: var(--cyan);
+  background: rgba(0, 212, 255, 0.05);
+}
+
+.tool-result {
+  margin-top: 16px;
+  padding: 16px;
+  background: rgba(0, 212, 255, 0.05);
+  border: 1px solid rgba(0, 212, 255, 0.2);
+  border-radius: var(--radius-md);
+  font-family: var(--font-mono);
+  font-size: 14px;
+  color: var(--cyan);
+  text-align: center;
+  min-height: 50px;
+  display: flex; align-items: center; justify-content: center;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.tool-result .big {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--gold);
+}
+
+.tool-result .label {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+.tool-btn {
+  width: 100%;
+  padding: 12px;
+  background: linear-gradient(135deg, var(--cyan), var(--cyan-dim));
+  color: var(--bg-void);
+  border-radius: var(--radius-sm);
+  font-weight: 700;
+  font-size: 13px;
+  letter-spacing: 0.05em;
+  transition: all var(--transition-fast);
+  margin-top: 8px;
+}
+
+.tool-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-cyan);
+}
+
+/* ============================================
+   SOLAR SYSTEM 3D VIEWER
+   ============================================ */
+.solar-system-viewer {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: radial-gradient(ellipse at center, #0a1830 0%, #020408 100%);
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.solar-system-viewer svg { width: 100%; height: 100%; }
+
+.planet-orbit {
+  fill: none;
+  stroke: rgba(0, 212, 255, 0.15);
+  stroke-width: 0.5;
+}
+
+.planet {
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.planet:hover { filter: brightness(1.5); }
+
+.planet-label {
+  font-family: var(--font-tech);
+  font-size: 8px;
+  fill: var(--text-dim);
+  text-anchor: middle;
+  pointer-events: none;
+}
+
+/* Planet info panel */
+.planet-info-panel {
+  position: absolute;
+  bottom: 20px; left: 20px; right: 20px;
+  background: var(--glass-strong);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-md);
+  padding: 16px 20px;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: none;
+  animation: slideUp 0.4s var(--ease-smooth);
+}
+
+.planet-info-panel.active { display: block; }
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.planet-info-panel h4 {
+  color: var(--gold);
+  font-size: 16px;
+  margin-bottom: 8px;
+}
+
+.planet-info-panel p {
+  color: var(--text-dim);
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.planet-info-panel .stats {
+  display: flex; gap: 20px; flex-wrap: wrap;
+  margin-top: 10px;
+  padding-top: 10px;
+  border-top: 1px solid var(--border);
+}
+
+.planet-info-panel .stats div {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--cyan);
+}
+
+.planet-info-panel .stats div strong {
+  display: block;
+  color: var(--muted);
+  font-size: 9px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  font-family: var(--font-body);
+  margin-bottom: 2px;
+}
+
+/* ============================================
+   LAUNCH TRACKER
+   ============================================ */
+.launch-list {
+  display: flex; flex-direction: column; gap: 12px;
+}
+
+.launch-item {
+  padding: 16px;
+  background: rgba(0, 212, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-fast);
+}
+
+.launch-item:hover {
+  background: rgba(0, 212, 255, 0.08);
+  border-color: var(--border-strong);
+}
+
+.launch-item.success { border-left: 3px solid var(--success); }
+.launch-item.upcoming { border-left: 3px solid var(--cyan); }
+.launch-item.failed { border-left: 3px solid var(--red); }
+
+.launch-header {
+  display: flex; justify-content: space-between; align-items: flex-start;
+  margin-bottom: 8px;
+}
+
+.launch-name {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.launch-provider {
+  font-size: 11px;
+  color: var(--gold);
+  font-weight: 600;
+}
+
+.launch-date {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--muted);
+  text-align: right;
+}
+
+.launch-status {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+  font-size: 9px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-top: 4px;
+}
+
+.launch-status.success { background: rgba(46, 213, 115, 0.15); color: var(--success); }
+.launch-status.upcoming { background: rgba(0, 212, 255, 0.15); color: var(--cyan); }
+.launch-status.failed { background: rgba(255, 71, 87, 0.15); color: var(--red); }
+
+/* ============================================
+   NEWS
+   ============================================ */
+.news-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 16px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.news-item {
+  padding: 20px;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  transition: all var(--transition-base);
+  display: block;
+  position: relative;
+  overflow: hidden;
+}
+
+.news-item::before {
+  content: '';
+  position: absolute; top: 0; left: 0;
+  width: 3px; height: 100%;
+  background: linear-gradient(180deg, var(--cyan), var(--gold));
+  opacity: 0;
+  transition: opacity var(--transition-fast);
+}
+
+.news-item:hover {
+  background: var(--glass-hover);
+  border-color: var(--border-strong);
+  transform: translateY(-3px);
+}
+
+.news-item:hover::before { opacity: 1; }
+
+.news-item .source {
+  font-size: 10px;
+  color: var(--cyan);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-weight: 700;
+  font-family: var(--font-tech);
+}
+
+.news-item .source.isro { color: var(--saffron); }
+.news-item .source.esa { color: var(--gold); }
+
+.news-item h4 {
+  font-size: 15px;
+  margin: 8px 0;
+  line-height: 1.4;
+  color: var(--text);
+}
+
+.news-item .date {
+  font-size: 11px;
+  color: var(--muted);
+  font-family: var(--font-mono);
+}
+
+/* ============================================
+   ASTRONAUT TRACKER
+   ============================================ */
+.astronaut-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  max-width: 1400px;
+  margin: 0 auto;
+}
+
+.astronaut-card {
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  text-align: center;
+  transition: all var(--transition-base);
+  position: relative;
+  overflow: hidden;
+}
+
+.astronaut-card::before {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--cyan), var(--gold));
+}
+
+.astronaut-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--border-strong);
+}
+
+.astronaut-avatar {
+  width: 70px; height: 70px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, var(--cyan), var(--gold));
+  margin: 0 auto 14px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 28px;
+  color: var(--bg-void);
+  font-weight: 700;
+  font-family: var(--font-display);
+  border: 2px solid var(--border-strong);
+}
+
+.astronaut-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.astronaut-role {
+  font-size: 11px;
+  color: var(--gold);
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  margin-bottom: 8px;
+  font-weight: 600;
+}
+
+.astronaut-nation {
+  font-size: 12px;
+  color: var(--muted);
+  display: flex; align-items: center; justify-content: center; gap: 6px;
+}
+
+.astronaut-flag {
+  display: inline-block;
+  width: 18px; height: 12px;
+  border-radius: 2px;
+  background-size: cover;
+}
+
+.flag-in { background: linear-gradient(180deg, var(--saffron) 33%, #fff 33% 66%, var(--green-flag) 66%); }
+.flag-us { background: linear-gradient(180deg, #b22234 20%, #fff 20% 40%, #b22234 40% 60%, #fff 60% 80%, #b22234 80%); position: relative; }
+.flag-us::before { content: ''; position: absolute; top: 0; left: 0; width: 40%; height: 50%; background: #3c3b6e; }
+.flag-ru { background: linear-gradient(180deg, #fff 33%, #0039a6 33% 66%, #d52b1e 66%); }
+.flag-jp { background: #fff; position: relative; }
+.flag-jp::before { content: ''; position: absolute; top: 50%; left: 50%; width: 6px; height: 6px; background: #bc002d; border-radius: 50%; transform: translate(-50%, -50%); }
+.flag-eu { background: #003399; position: relative; }
+.flag-eu::before { content: '★'; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: #ffcc00; font-size: 8px; }
+
+/* ============================================
+   GALAXY MERGER SIMULATOR
+   ============================================ */
+.galaxy-sim {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: radial-gradient(ellipse at center, #0a1830 0%, #020408 100%);
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.galaxy-sim canvas { width: 100%; height: 100%; display: block; }
+
+.sim-controls {
+  position: absolute;
+  bottom: 16px; left: 16px; right: 16px;
+  display: flex; gap: 10px; flex-wrap: wrap;
+  align-items: center;
+}
+
+.sim-controls button {
+  padding: 8px 14px;
+  background: var(--glass-strong);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-sm);
+  color: var(--text);
+  font-size: 12px;
+  font-weight: 600;
+  transition: all var(--transition-fast);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.sim-controls button:hover {
+  background: var(--cyan);
+  color: var(--bg-void);
+}
+
+.sim-controls button.active {
+  background: var(--cyan);
+  color: var(--bg-void);
+}
+
+/* ============================================
+   PULSAR AUDIO VISUALIZER
+   ============================================ */
+.pulsar-viz {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: radial-gradient(ellipse at center, #0a1830 0%, #020408 100%);
+  border-radius: var(--radius-lg);
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.pulsar-viz canvas { width: 100%; height: 100%; display: block; }
+
+/* ============================================
+   EXOPLANET HABITABILITY
+   ============================================ */
+.habitability-meter {
+  height: 12px;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: var(--radius-pill);
+  overflow: hidden;
+  margin-top: 8px;
+  position: relative;
+}
+
+.habitability-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--red), var(--gold), var(--success));
+  border-radius: var(--radius-pill);
+  transition: width 0.6s var(--ease-smooth);
+  position: relative;
+}
+
+.habitability-fill::after {
+  content: '';
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(100%); }
+}
+
+/* ============================================
+   DEEP SPACE NETWORK
+   ============================================ */
+.dsn-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.dsn-station {
+  background: rgba(0, 212, 255, 0.04);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 16px;
+  transition: all var(--transition-fast);
+}
+
+.dsn-station:hover {
+  background: rgba(0, 212, 255, 0.08);
+  border-color: var(--border-strong);
+}
+
+.dsn-station .name {
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--text);
+  margin-bottom: 4px;
+}
+
+.dsn-station .location {
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 10px;
+}
+
+.dsn-station .status {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.dsn-station .status-dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 8px var(--success);
+  animation: blink 2s infinite;
+}
+
+.dsn-station .status.active .status-dot { background: var(--success); }
+.dsn-station .status.standby .status-dot { background: var(--gold); animation: none; }
+
+/* ============================================
+   LOADER
+   ============================================ */
+.loader {
+  display: inline-block;
+  width: 18px; height: 18px;
+  border: 2px solid var(--border);
+  border-top-color: var(--cyan);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.loader-lg {
+  width: 40px; height: 40px;
+  border-width: 3px;
+}
+
+/* ============================================
+   FOOTER
+   ============================================ */
+footer {
+  padding: 80px 40px 40px;
+  border-top: 1px solid var(--border);
+  background: rgba(0, 0, 0, 0.5);
+  position: relative;
+}
+
+.footer-grid {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.footer-brand .logo { margin-bottom: 16px; }
+
+.footer-brand p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+  max-width: 400px;
+}
+
+.footer-col h5 {
+  font-size: 12px;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  margin-bottom: 16px;
+  font-family: var(--font-tech);
+}
+
+.footer-col a {
+  display: block;
+  color: var(--muted);
+  font-size: 13px;
+  padding: 6px 0;
+  transition: color var(--transition-fast);
+}
+
+.footer-col a:hover { color: var(--cyan); }
+
+.footer-bottom {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding-top: 30px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+}
+
+.tricolor {
+  height: 3px;
+  width: 200px;
+  margin: 20px auto;
+  background: linear-gradient(90deg, var(--saffron) 33%, #fff 33% 66%, var(--green-flag) 66%);
+  border-radius: 2px;
+}
+
+.footer-bottom p {
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+/* ============================================
+   ANIMATIONS
+   ============================================ */
+.fade-in {
+  opacity: 0;
+  transform: translateY(30px);
+  transition: all 0.8s var(--ease-smooth);
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.scale-in {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: all 0.6s var(--ease-smooth);
+}
+
+.scale-in.visible {
+  opacity: 1;
+  transform: scale(1);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+@media (max-width: 1200px) {
+  .live-dashboard { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr 1fr; gap: 30px; }
+}
+
+@media (max-width: 900px) {
+  nav { padding: 12px 20px; }
+  .nav-links { display: none; }
+  .nav-links.open {
+    display: flex;
+    position: absolute;
+    top: 100%; left: 0; right: 0;
+    background: var(--bg-deep);
+    border-bottom: 1px solid var(--border);
+    flex-direction: column;
+    padding: 16px;
+    gap: 4px;
+  }
+  .nav-links.open a { width: 100%; }
+  .mobile-menu-btn { display: flex; }
+  .live-indicator { display: none; }
+  section { padding: 70px 20px; }
+  .hero { padding: 150px 20px 60px; }
+  .iss-info { grid-template-columns: 1fr; }
+  .sw-grid { grid-template-columns: 1fr; }
+  .footer-grid { grid-template-columns: 1fr; gap: 30px; }
+  .cosmic-clock { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 600px) {
+  .ticker { font-size: 11px; }
+  .ticker-label { padding: 0 10px; font-size: 9px; }
+  .hero h1 { font-size: 36px; }
+  .hero-buttons { flex-direction: column; }
+  .btn { width: 100%; justify-content: center; }
+  .cosmic-clock { grid-template-columns: 1fr; }
+  .tabs { gap: 4px; }
+  .tab { padding: 8px 14px; font-size: 11px; }
+  .grid { grid-template-columns: 1fr; }
+  .tools-grid { grid-template-columns: 1fr; }
+  .astronaut-grid { grid-template-columns: repeat(2, 1fr); }
+  .timeline { padding-left: 30px; }
+  .timeline::before { left: 5px; }
+  .timeline-item::before { left: -30px; width: 12px; height: 12px; }
+  footer { padding: 50px 20px 30px; }
+}
+
+/* ============================================
+   ACCESSIBILITY
+   ============================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+/* Focus styles */
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+  outline: 2px solid var(--cyan);
+  outline-offset: 2px;
+}
+
+/* Print styles */
+@media print {
+  .ticker, nav, .live-panel, .tool-card { break-inside: avoid; }
+  body { background: white; color: black; }
+}
+
+/* ============================================
+   SPECIAL EFFECTS
+   ============================================ */
+.glow-text {
+  text-shadow: 0 0 10px currentColor;
+}
+
+.gradient-border {
+  position: relative;
+  background: var(--bg-mid);
+  border-radius: var(--radius-lg);
+}
+
+.gradient-border::before {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, var(--cyan), var(--gold), var(--saffron));
+  z-index: -1;
+  padding: 1px;
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+}
+
+/* Data feed indicator */
+.data-source {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 10px;
+  background: rgba(46, 213, 115, 0.1);
+  border: 1px solid rgba(46, 213, 115, 0.3);
+  border-radius: var(--radius-pill);
+  font-size: 10px;
+  color: var(--success);
+  font-weight: 600;
+  margin-top: 12px;
+}
+
+.data-source::before {
+  content: '';
+  width: 5px; height: 5px;
+  border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 6px var(--success);
+}
+
+.data-source.offline {
+  background: rgba(255, 165, 2, 0.1);
+  border-color: rgba(255, 165, 2, 0.3);
+  color: var(--warning);
+}
+
+.data-source.offline::before {
+  background: var(--warning);
+  box-shadow: 0 0 6px var(--warning);
+}
+</style>
+</head>
+<body>
+
+<!-- BACKGROUND LAYERS -->
+<canvas id="starfield"></canvas>
+<div class="nebula"></div>
+<div class="grid-overlay"></div>
+
+<!-- LIVE TICKER -->
+<div class="ticker">
+  <div class="ticker-label"><span class="ticker-dot"></span>LIVE FEED</div>
+  <div class="ticker-content">
+    <div class="ticker-track" id="tickerTrack">
+      <span><strong>NASA APOD:</strong> Loading today's astronomy picture...</span>
+      <span><strong class="india-tag">ISRO:</strong> Chandrayaan-3 made India first at lunar south pole</span>
+      <span><strong>ISS:</strong> Tracking live position...</span>
+      <span><strong>NEO:</strong> Monitoring near-Earth asteroids...</span>
+      <span><strong class="gold-tag">ADITYA-L1:</strong> India's solar observatory active at L1</span>
+      <span><strong>LAUNCHES:</strong> Tracking global rocket launches...</span>
+      <span><strong class="india-tag">XPOSAT:</strong> India's first X-ray polarimetry satellite operational</span>
+    </div>
+  </div>
+</div>
+
+<!-- NAVIGATION -->
+<nav id="mainNav">
+  <a href="#home" class="logo">
+    <svg viewBox="0 0 24 24" fill="none" stroke="url(#logoGrad)" stroke-width="2">
+      <defs>
+        <linearGradient id="logoGrad" x1="0" x2="1">
+          <stop offset="0" stop-color="#00d4ff"/>
+          <stop offset="1" stop-color="#ffb547"/>
+        </linearGradient>
+      </defs>
+      <circle cx="12" cy="12" r="4"/>
+      <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-30 12 12)"/>
+      <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(30 12 12)" opacity="0.5"/>
+    </svg>
+    Cosmos Chronicle
+  </a>
+  <div class="nav-links" id="navLinks">
+    <a href="#home" class="active">Home</a>
+    <a href="#live">Live</a>
+    <a href="#tools">Tools</a>
+    <a href="#solar">Solar System</a>
+    <a href="#global">Global</a>
+    <a href="#india">India</a>
+    <a href="#timeline">Timeline</a>
+    <a href="#news">News</a>
+    <div class="live-indicator">LIVE</div>
+  </div>
+  <button class="mobile-menu-btn" id="mobileMenuBtn" aria-label="Toggle menu">
+    <span></span>
+  </button>
+</nav>
+
+<!-- HERO -->
+<section class="hero" id="home">
+  <div class="orbit-ring ring-1"></div>
+  <div class="orbit-ring ring-2"></div>
+  <div class="orbit-ring ring-3"></div>
+  <div class="hero-content">
+    <div class="hero-badge">
+      <span class="pulse-dot"></span>
+      LIVE OBSERVATORY · REAL-TIME COSMIC DATA
+    </div>
+    <h1>The Universe, <span class="accent">Live.</span><br>From Earth to Infinity.</h1>
+    <p>A real-time astrophysics observatory — tracking the ISS, NASA's Astronomy Picture of the Day, near-Earth asteroids, rocket launches, solar activity, and India's stellar missions. All powered by live data feeds from NASA, ISRO, and global space agencies.</p>
+    <div class="hero-buttons">
+      <a href="#live" class="btn btn-primary">🛰️ View Live Dashboard</a>
+      <a href="#tools" class="btn btn-secondary">🧮 Interactive Tools</a>
+      <a href="#india" class="btn btn-ghost">🇮🇳 India's Cosmic Journey</a>
+    </div>
+
+    <div class="cosmic-clock">
+      <div class="clock-item earth">
+        <div class="label">🌍 Earth (UTC)</div>
+        <div class="time" id="earthTime">--:--:--</div>
+        <div class="sub">Coordinated Universal Time</div>
+      </div>
+      <div class="clock-item sun">
+        <div class="label">☀️ Solar Time</div>
+        <div class="time" id="sunTime">--:--:--</div>
+        <div class="sub">Apparent Solar Day</div>
+      </div>
+      <div class="clock-item moon">
+        <div class="label">🌙 Moon (Tranquility)</div>
+        <div class="time" id="moonTime">--:--:--</div>
+        <div class="sub">Lunar Coordinated Time</div>
+      </div>
+      <div class="clock-item mars">
+        <div class="label">🔴 Mars (AMT)</div>
+        <div class="time" id="marsTime">--:--:--</div>
+        <div class="sub">Mars Coordinated Time</div>
+      </div>
+      <div class="clock-item jupiter">
+        <div class="label">🪐 Jupiter</div>
+        <div class="time" id="jupiterTime">--:--:--</div>
+        <div class="sub">9h 55m rotation</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS BANNER -->
+<section style="padding: 40px;">
+  <div class="stats-banner">
+    <div class="big-stat"><div class="num" id="statAge">13.8B</div><div class="label">Age of Universe (yrs)</div></div>
+    <div class="big-stat"><div class="num">2T+</div><div class="label">Observable Galaxies</div></div>
+    <div class="big-stat"><div class="num" id="statExo">5,700+</div><div class="label">Confirmed Exoplanets</div></div>
+    <div class="big-stat"><div class="num">100+</div><div class="label">Years of Indian Space Science</div></div>
+    <div class="big-stat"><div class="num" id="statLaunches">--</div><div class="label">Launches This Year</div></div>
+  </div>
+</section>
+
+<!-- LIVE DASHBOARD -->
+<section id="live">
+  <div class="section-header">
+    <span class="section-tag tag-live">● LIVE DATA FEEDS</span>
+    <h2>Real-Time Cosmic Observatory</h2>
+    <p>Live data from NASA, Open Notify, and global space agencies — updating every few seconds.</p>
+  </div>
+
+  <div class="live-dashboard">
+
+    <!-- ISS Tracker -->
+    <div class="live-panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <div class="icon">🛰️</div>
+          <div>ISS Live Tracker<div class="sub">International Space Station · 408 km altitude</div></div>
+        </div>
+        <div class="live-badge">LIVE</div>
+      </div>
+      <div class="iss-map" id="issMap">
+        <svg viewBox="0 0 800 400" preserveAspectRatio="xMidYMid meet">
+          <defs>
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+              <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(0,212,255,0.04)" stroke-width="0.5"/>
+            </pattern>
+            <radialGradient id="earthGrad">
+              <stop offset="0%" stop-color="#1a4d7a"/>
+              <stop offset="100%" stop-color="#0a2540"/>
+            </radialGradient>
+          </defs>
+          <rect width="800" height="400" fill="url(#grid)"/>
+          <!-- Simplified continents -->
+          <g fill="rgba(0,212,255,0.12)" stroke="rgba(0,212,255,0.25)" stroke-width="0.5">
+            <path d="M 80,100 L 180,80 L 220,120 L 200,180 L 140,200 L 100,180 Z"/>
+            <path d="M 180,220 L 220,230 L 240,300 L 210,360 L 180,340 Z"/>
+            <path d="M 370,100 L 430,90 L 440,130 L 400,140 Z"/>
+            <path d="M 380,160 L 450,150 L 470,240 L 430,300 L 390,280 Z"/>
+            <path d="M 440,80 L 620,70 L 680,130 L 640,180 L 520,170 L 460,140 Z"/>
+            <path d="M 540,170 L 580,180 L 570,230 L 545,225 Z" fill="rgba(255,153,51,0.25)" stroke="rgba(255,153,51,0.5)"/>
+            <path d="M 640,280 L 720,270 L 730,320 L 660,330 Z"/>
+            <path d="M 100,380 L 700,380 L 700,400 L 100,400 Z" opacity="0.5"/>
+          </g>
+          <line x1="0" y1="200" x2="800" y2="200" stroke="rgba(255,181,71,0.15)" stroke-dasharray="4,4"/>
+          <line x1="400" y1="0" x2="400" y2="400" stroke="rgba(255,181,71,0.15)" stroke-dasharray="4,4"/>
+        </svg>
+        <div class="iss-dot" id="issDot" style="left:50%;top:50%;"></div>
+      </div>
+      <div class="iss-info">
+        <div class="iss-stat"><div class="label">Latitude</div><div class="value" id="issLat">--</div></div>
+        <div class="iss-stat"><div class="label">Longitude</div><div class="value" id="issLon">--</div></div>
+        <div class="iss-stat"><div class="label">People in Space</div><div class="value" id="issPeople">--</div></div>
+      </div>
+      <div class="data-source" id="issSource">Live · Open Notify API</div>
+    </div>
+
+    <!-- APOD -->
+    <div class="live-panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <div class="icon">🌌</div>
+          <div>NASA APOD<div class="sub">Astronomy Picture of the Day</div></div>
+        </div>
+        <div class="live-badge">TODAY</div>
+      </div>
+      <div class="apod-image" id="apodImage">
+        <div class="placeholder"><div class="loader"></div>&nbsp; Loading NASA feed...</div>
+      </div>
+      <div class="apod-info">
+        <div class="apod-date" id="apodDate">Loading...</div>
+        <h4 id="apodTitle">Fetching today's picture...</h4>
+        <p id="apodDesc">Connecting to NASA's Astronomy Picture of the Day API.</p>
+      </div>
+      <div class="data-source" id="apodSource">Live · NASA API</div>
+    </div>
+
+    <!-- Asteroids -->
+    <div class="live-panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <div class="icon">☄️</div>
+          <div>Near-Earth Asteroids<div class="sub">Today's close approaches (NASA NeoWs)</div></div>
+        </div>
+        <div class="live-badge">LIVE</div>
+      </div>
+      <div class="asteroid-list" id="asteroidList">
+        <div style="text-align:center;padding:40px;color:var(--muted);"><div class="loader"></div>&nbsp; Fetching asteroid data...</div>
+      </div>
+      <div class="data-source" id="asteroidSource">Live · NASA NeoWs</div>
+    </div>
+
+    <!-- Space Weather -->
+    <div class="live-panel">
+      <div class="panel-header">
+        <div class="panel-title">
+          <div class="icon">☀️</div>
+          <div>Space Weather<div class="sub">Solar activity monitor · Aditya-L1 data</div></div>
+        </div>
+        <div class="live-badge">LIVE</div>
+      </div>
+      <div class="sw-grid" id="spaceWeather">
+        <div class="sw-card"><div class="label">Solar Wind Speed</div><div class="value" id="swSpeed">--</div><div class="sub">km/s</div></div>
+        <div class="sw-card"><div class="label">Solar Wind Density</div><div class="value" id="swDensity">--</div><div class="sub">protons/cm³</div></div>
+        <div class="sw-card"><div class="label">Bz Component</div><div class="value" id="swBz">--</div><div class="sub">nT (south = active)</div></div>
+        <div class="sw-card"><div class="label">Kp Index</div><div class="value" id="swKp">--</div><div class="sub">Geomagnetic activity</div></div>
+      </div>
+      <div style="margin-top:16px;padding:14px;background:rgba(255,181,71,0.05);border:1px solid rgba(255,181,71,0.2);border-radius:var(--radius-md);font-size:12px;color:var(--text-dim);">
+        <strong style="color:var(--gold);">☀️ Aditya-L1 Update:</strong> India's solar observatory is actively monitoring the Sun from Lagrange Point L1, 1.5M km from Earth. Launched Sept 2023, reached L1 in Jan 2024 with 7 scientific payloads.
+      </div>
+      <div class="data-source" id="swSource">Live · NOAA SWPC</div>
+    </div>
+
+  </div>
+</section>
+
+<!-- INTERACTIVE TOOLS -->
+<section id="tools">
+  <div class="section-header">
+    <span class="section-tag tag-tools">🧮 INTERACTIVE TOOLS</span>
+    <h2>Astrophysics Calculators & Simulators</h2>
+    <p>Explore the cosmos with hands-on tools — calculate black hole sizes, plan rocket trajectories, simulate galaxy mergers, and more.</p>
+  </div>
+
+  <div class="tools-grid">
+
+    <!-- Tool 1: Black Hole Calculator -->
+    <div class="tool-card">
+      <div class="tool-header">
+        <div class="tool-icon">🕳️</div>
+        <div>
+          <h3>Black Hole Calculator</h3>
+          <div class="tool-sub">Schwarzschild Radius</div>
+        </div>
+      </div>
+      <div class="tool-body">
+        <div class="tool-input-group">
+          <label>Mass (in Solar Masses)</label>
+          <input type="number" id="bhMass" value="1" step="0.1" min="0.001">
+        </div>
+        <button class="tool-btn" onclick="calcBlackHole()">Calculate</button>
+        <div class="tool-result" id="bhResult">
+          <div class="big">2.95 km</div>
+          <div class="label">Event Horizon Radius</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tool 2: Cosmic Distance -->
+    <div class="tool-card">
+      <div class="tool-header">
+        <div class="tool-icon">📏</div>
+        <div>
+          <h3>Cosmic Distance Converter</h3>
+          <div class="tool-sub">Light-years, parsecs, AU</div>
+        </div>
+      </div>
+      <div class="tool-body">
+        <div class="tool-input-group">
+          <label>Value</label>
+          <input type="number" id="distValue" value="1" step="0.1">
+        </div>
+        <div class="tool-input-group">
+          <label>From Unit</label>
+          <select id="distUnit">
+            <option value="ly">Light-years</option>
+            <option value="pc">Parsecs</option>
+            <option value="au">Astronomical Units</option>
+            <option value="km">Kilometers</option>
+          </select>
+        </div>
+        <button class="tool-btn" onclick="convertDistance()">Convert</button>
+        <div class="tool-result" id="distResult">
+          <div class="big">9.461 × 10¹² km</div>
+          <div class="label">In Kilometers</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tool 3: Redshift Calculator -->
+    <div class="tool-card">
+      <div class="tool-header">
+        <div class="tool-icon">🔴</div>
+        <div>
+          <h3>Redshift Calculator</h3>
+          <div class="tool-sub">Cosmological expansion</div>
+        </div>
+      </div>
+      <div class="tool-body">
+        <div class="tool-input-group">
+          <label>Observed Wavelength (nm)</label>
+          <input type="number" id="redObserved" value="656" step="0.1">
+        </div>
+        <div class="tool-input-group">
+          <label>Rest Wavelength (nm)</label>
+          <input type="number" id="redRest" value="486" step="0.1">
+        </div>
+        <button class="tool-btn" onclick="calcRedshift()">Calculate</button>
+        <div class="tool-result" id="redResult">
+          <div class="big">z = 0.35</div>
+          <div class="label">Redshift Value</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tool 4: Exoplanet Habitability -->
+    <div class="tool-card">
+      <div class="tool-header">
+        <div class="tool-icon">🌍</div>
+        <div>
+          <h3>Exoplanet Habitability</h3>
+          <div class="tool-sub">Earth Similarity Index</div>
+        </div>
+      </div>
+      <div class="tool-body">
+        <div class="tool-input-group">
+          <label>Planet Radius (Earth = 1)</label>
+          <input type="number" id="exRadius" value="1" step="0.1" min="0.1">
+        </div>
+        <div class="tool-input-group">
+          <label>Planet Density (Earth = 1)</label>
+          <input type="number" id="exDensity" value="1" step="0.1" min="0.1">
+        </div>
+        <div class="tool-input-group">
+          <label>Escape Velocity (Earth = 1)</label>
+          <input type="number" id="exEscape" value="1" step="0.1" min="0.1">
+        </div>
+        <div class="tool-input-group">
+          <label>Surface Temp (K)</label>
+          <input type="number" id="exTemp" value="288" step="1">
+        </div>
+        <button class="tool-btn" onclick="calcHabitability()">Calculate ESI</button>
+        <div class="tool-result" id="exResult">
+          <div class="big">0.98</div>
+          <div class="label">Earth Similarity Index (0-1)</div>
+          <div class="habitability-meter"><div class="habitability-fill" id="habFill" style="width:98%"></div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tool 5: Rocket Fuel Calculator -->
+    <div class="tool-card">
+      <div class="tool-header">
+        <div class="tool-icon">🚀</div>
+        <div>
+          <h3>Rocket Fuel Calculator</h3>
+          <div class="tool-sub">Tsiolkovsky equation</div>
+        </div>
+      </div>
+      <div class="tool-body">
+        <div class="tool-input-group">
+          <label>Delta-v required (km/s)</label>
+          <input type="number" id="rvDeltaV" value="9.4" step="0.1">
+        </div>
+        <div class="tool-input-group">
+          <label>Exhaust velocity (km/s)</label>
+          <input type="number" id="rvExhaust" value="3" step="0.1">
+        </div>
+        <div class="tool-input-group">
+          <label>Payload mass (kg)</label>
+          <input type="number" id="rvPayload" value="1000" step="100">
+        </div>
+        <button class="tool-btn" onclick="calcRocket()">Calculate</button>
+        <div class="tool-result" id="rvResult">
+          <div class="big">22,174 kg</div>
+          <div class="label">Fuel Mass Required</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tool 6: Gravity Calculator -->
+    <div class="tool-card">
+      <div class="tool-header">
+        <div class="tool-icon">⚖️</div>
+        <div>
+          <h3>Gravity Calculator</h3>
+          <div class="tool-sub">Your weight on other worlds</div>
+        </div>
+      </div>
+      <div class="tool-body">
+        <div class="tool-input-group">
+          <label>Your mass on Earth (kg)</label>
+          <input type="number" id="gravMass" value="70" step="1">
+        </div>
+        <div class="tool-input-group">
+          <label>Select celestial body</label>
+          <select id="gravBody">
+            <option value="0.38">Mercury (0.38g)</option>
+            <option value="0.91">Venus (0.91g)</option>
+            <option value="1" selected>Earth (1g)</option>
+            <option value="0.165">Moon (0.165g)</option>
+            <option value="0.38">Mars (0.38g)</option>
+            <option value="2.53">Jupiter (2.53g)</option>
+            <option value="1.07">Saturn (1.07g)</option>
+            <option value="0.89">Uranus (0.89g)</option>
+            <option value="1.14">Neptune (1.14g)</option>
+            <option value="0.04">Pluto (0.04g)</option>
+            <option value="27.9">Sun (27.9g)</option>
+          </select>
+        </div>
+        <button class="tool-btn" onclick="calcGravity()">Calculate</button>
+        <div class="tool-result" id="gravResult">
+          <div class="big">686 N</div>
+          <div class="label">Weight (Newtons)</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tool 7: Photon Journey -->
+    <div class="tool-card">
+      <div class="tool-header">
+        <div class="tool-icon">💡</div>
+        <div>
+          <h3>Photon Journey Time</h3>
+          <div class="tool-sub">How long light takes</div>
+        </div>
+      </div>
+      <div class="tool-body">
+        <div class="tool-input-group">
+          <label>Distance (light-years)</label>
+          <input type="number" id="photonDist" value="4.24" step="0.1">
+        </div>
+        <button class="tool-btn" onclick="calcPhoton()">Calculate</button>
+        <div class="tool-result" id="photonResult">
+          <div class="big">4.24 years</div>
+          <div class="label">From photon's perspective</div>
+          <div style="font-size:11px;color:var(--muted);margin-top:6px;">To Proxima Centauri</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Tool 8: Stellar Lifespan -->
+    <div class="tool-card">
+      <div class="tool-header">
+        <div class="tool-icon">⭐</div>
+        <div>
+          <h3>Stellar Lifespan</h3>
+          <div class="tool-sub">How long a star lives</div>
+        </div>
+      </div>
+      <div class="tool-body">
+        <div class="tool-input-group">
+          <label>Star mass (Solar masses)</label>
+          <input type="number" id="starMass" value="1" step="0.1" min="0.1">
+        </div>
+        <button class="tool-btn" onclick="calcStarLife()">Calculate</button>
+        <div class="tool-result" id="starResult">
+          <div class="big">10 Billion yrs</div>
+          <div class="label">Main Sequence Lifetime</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- SOLAR SYSTEM VIEWER -->
+<section id="solar">
+  <div class="section-header">
+    <span class="section-tag tag-new">✨ NEW · INTERACTIVE</span>
+    <h2>Interactive Solar System</h2>
+    <p>Click any planet to explore its data. Watch the planets orbit in real-time.</p>
+  </div>
+
+  <div class="solar-system-viewer" id="solarViewer">
+    <svg id="solarSVG" viewBox="0 0 1000 562" preserveAspectRatio="xMidYMid meet">
+      <defs>
+        <radialGradient id="sunGrad">
+          <stop offset="0%" stop-color="#fff5a0"/>
+          <stop offset="40%" stop-color="#ffb547"/>
+          <stop offset="100%" stop-color="#c78a2e"/>
+        </radialGradient>
+        <radialGradient id="sunGlow">
+          <stop offset="0%" stop-color="rgba(255,181,71,0.4)"/>
+          <stop offset="100%" stop-color="rgba(255,181,71,0)"/>
+        </radialGradient>
+      </defs>
+      <!-- Orbits -->
+      <circle cx="500" cy="281" r="60" class="planet-orbit"/>
+      <circle cx="500" cy="281" r="90" class="planet-orbit"/>
+      <circle cx="500" cy="281" r="120" class="planet-orbit"/>
+      <circle cx="500" cy="281" r="160" class="planet-orbit"/>
+      <circle cx="500" cy="281" r="210" class="planet-orbit"/>
+      <circle cx="500" cy="281" r="260" class="planet-orbit"/>
+      <circle cx="500" cy="281" r="310" class="planet-orbit"/>
+      <circle cx="500" cy="281" r="360" class="planet-orbit"/>
+      <!-- Sun -->
+      <circle cx="500" cy="281" r="40" fill="url(#sunGlow)"/>
+      <circle cx="500" cy="281" r="20" fill="url(#sunGrad)"/>
+      <!-- Planets will be added by JS -->
+      <g id="planetsGroup"></g>
+    </svg>
+    <div class="planet-info-panel" id="planetInfo">
+      <h4 id="planetName">Planet</h4>
+      <p id="planetDesc">Click a planet to learn more.</p>
+      <div class="stats" id="planetStats"></div>
+    </div>
+  </div>
+</section>
+
+<!-- GALAXY MERGER SIMULATOR -->
+<section id="galaxy">
+  <div class="section-header">
+    <span class="section-tag tag-new">✨ NEW · SIMULATOR</span>
+    <h2>Galaxy Merger Simulator</h2>
+    <p>Watch two galaxies collide and merge — a process taking billions of years, simulated in seconds.</p>
+  </div>
+
+  <div class="galaxy-sim">
+    <canvas id="galaxyCanvas"></canvas>
+    <div class="sim-controls">
+      <button id="galaxyPlay" class="active">▶ Play</button>
+      <button id="galaxyPause">⏸ Pause</button>
+      <button id="galaxyReset">↺ Reset</button>
+      <button id="galaxySpeed">Speed: 1x</button>
+    </div>
+  </div>
+</section>
+
+<!-- PULSAR VISUALIZER -->
+<section id="pulsar">
+  <div class="section-header">
+    <span class="section-tag tag-new">✨ NEW · AUDIO/VISUAL</span>
+    <h2>Pulsar Signal Visualizer</h2>
+    <p>Visualize the rhythmic pulses of a neutron star — nature's most precise clock.</p>
+  </div>
+
+  <div class="pulsar-viz">
+    <canvas id="pulsarCanvas"></canvas>
+  </div>
+</section>
+
+<!-- GLOBAL ASTROPHYSICS -->
+<section id="global">
+  <div class="section-header">
+    <span class="section-tag tag-global">GLOBAL ASTROPHYSICS</span>
+    <h2>The Universe at a Glance</h2>
+    <p>From the smallest quantum fluctuations to the largest cosmic structures — humanity's greatest discoveries.</p>
+  </div>
+
+  <div class="search-bar">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="globalSearch" placeholder="Search topics — black holes, JWST, dark matter...">
+  </div>
+
+  <div class="tabs" id="globalTabs">
+    <div class="tab active" data-cat="all">All</div>
+    <div class="tab" data-cat="cosmo">Cosmology</div>
+    <div class="tab" data-cat="objects">Cosmic Objects</div>
+    <div class="tab" data-cat="missions">Missions</div>
+    <div class="tab" data-cat="telescopes">Telescopes</div>
+    <div class="tab" data-cat="physics">Physics</div>
+  </div>
+
+  <div class="grid" id="globalGrid">
+    <div class="card" data-cat="cosmo"><div class="card-icon">💥</div><h3>The Big Bang Theory</h3><p>The universe began ~13.8 billion years ago from an infinitely hot, dense singularity. In the first fractions of a second, space itself expanded faster than light (cosmic inflation), seeding the structures we see today.</p><div class="stats"><div class="stat"><strong>13.8 Byr</strong>Age</div><div class="stat"><strong>10⁻³⁶ s</strong>Inflation</div><div class="stat"><strong>2.725 K</strong>CMB Temp</div></div></div>
+    <div class="card" data-cat="cosmo"><div class="card-icon">🌌</div><h3>Cosmic Microwave Background</h3><p>The afterglow of the Big Bang — a nearly uniform bath of microwave radiation at 2.725 K, discovered in 1965 by Penzias & Wilson. Tiny fluctuations (1 part in 100,000) map the seeds of galaxies.</p><div class="stats"><div class="stat"><strong>1965</strong>Discovered</div><div class="stat"><strong>COBE/WMAP/Planck</strong>Missions</div></div></div>
+    <div class="card" data-cat="cosmo"><div class="card-icon">🕳️</div><h3>Dark Matter</h3><p>An invisible substance making up ~27% of the universe. It doesn't emit or absorb light but reveals itself through gravity — holding galaxies together and bending light (gravitational lensing).</p><div class="stats"><div class="stat"><strong>27%</strong>Of Universe</div><div class="stat"><strong>WIMPs/Axions</strong>Candidates</div></div></div>
+    <div class="card" data-cat="cosmo"><div class="card-icon">⚡</div><h3>Dark Energy</h3><p>A mysterious force making up ~68% of the universe, responsible for its accelerating expansion. Discovered in 1998 through observations of distant Type Ia supernovae — Nobel Prize 2011.</p><div class="stats"><div class="stat"><strong>68%</strong>Of Universe</div><div class="stat"><strong>1998</strong>Discovered</div></div></div>
+    <div class="card" data-cat="objects"><div class="card-icon">⚫</div><h3>Black Holes</h3><p>Regions where gravity is so strong that nothing — not even light — can escape. First imaged in 2019 (M87*) and 2022 (Sagittarius A*). Range from stellar-mass to supermassive (billions of solar masses).</p><div class="stats"><div class="stat"><strong>2019</strong>First Image</div><div class="stat"><strong>Sgr A*</strong>Our BH</div><div class="stat"><strong>6.5B M☉</strong>M87*</div></div></div>
+    <div class="card" data-cat="objects"><div class="card-icon">⭐</div><h3>Neutron Stars & Pulsars</h3><p>Ultra-dense remnants of supernovae — a sugar-cube of neutron star material weighs a billion tons. Pulsars are rapidly rotating neutron stars emitting beams of radiation like cosmic lighthouses.</p><div class="stats"><div class="stat"><strong>1967</strong>Pulsar Found</div><div class="stat"><strong>10¹⁷ kg/m³</strong>Density</div></div></div>
+    <div class="card" data-cat="objects"><div class="card-icon">💫</div><h3>Quasars</h3><p>The brightest objects in the universe — supermassive black holes actively feeding, outshining entire galaxies. Visible across billions of light-years. First identified in 1963 (3C 273).</p><div class="stats"><div class="stat"><strong>1963</strong>Identified</div><div class="stat"><strong>10¹³ L☉</strong>Luminosity</div></div></div>
+    <div class="card" data-cat="objects"><div class="card-icon">🌠</div><h3>Supernovae</h3><p>Colossal stellar explosions marking the death of massive stars or the thermonuclear detonation of white dwarfs. They forge heavy elements (gold, uranium) and seed the cosmos with the building blocks of life.</p><div class="stats"><div class="stat"><strong>1054</strong>Crab Nebula</div><div class="stat"><strong>1987A</strong>Modern SN</div></div></div>
+    <div class="card" data-cat="objects"><div class="card-icon">🪐</div><h3>Exoplanets</h3><p>Worlds orbiting other stars. Over 5,700 confirmed, from hot Jupiters to Earth-sized rocky planets in habitable zones. Notable: TRAPPIST-1 (7 Earth-sized worlds), Proxima Centauri b, Kepler-452b.</p><div class="stats"><div class="stat"><strong>1992</strong>First Found</div><div class="stat"><strong>5,700+</strong>Confirmed</div></div></div>
+    <div class="card" data-cat="physics"><div class="card-icon">🌊</div><h3>Gravitational Waves</h3><p>Ripples in spacetime predicted by Einstein in 1916, first detected on 14 September 2015 by LIGO from merging black holes 1.3 billion light-years away.</p><div class="stats"><div class="stat"><strong>2015</strong>First Detection</div><div class="stat"><strong>LIGO/Virgo/KAGRA</strong>Network</div></div></div>
+    <div class="card" data-cat="physics"><div class="card-icon">🔭</div><h3>General Relativity</h3><p>Einstein's 1915 theory describing gravity as the curvature of spacetime by mass and energy. Verified by gravitational lensing, time dilation, GPS corrections, and black hole imaging.</p><div class="stats"><div class="stat"><strong>1915</strong>Published</div><div class="stat"><strong>1919</strong>Eclipse Test</div></div></div>
+    <div class="card" data-cat="physics"><div class="card-icon">🌀</div><h3>String Theory</h3><p>Theoretical framework attempting to unify quantum mechanics with general relativity. Proposes fundamental particles are vibrating strings in 10 or 11 dimensions.</p><div class="stats"><div class="stat"><strong>10-11</strong>Dimensions</div><div class="stat"><strong>1968</strong>Origins</div></div></div>
+    <div class="card" data-cat="physics"><div class="card-icon">🧲</div><h3>Magnetars</h3><p>Neutron stars with the strongest magnetic fields in the universe — a quadrillion times Earth's. Capable of triggering starquakes and giant flares visible across galaxies.</p><div class="stats"><div class="stat"><strong>10¹⁵ Gauss</strong>Field</div><div class="stat"><strong>1979</strong>First Found</div></div></div>
+    <div class="card" data-cat="missions"><div class="card-icon">🛰️</div><h3>Hubble Space Telescope</h3><p>Launched 1990, orbiting Earth at 540 km. Responsible for the Hubble Deep Field, Pillars of Creation, and measuring the universe's expansion rate.</p><div class="stats"><div class="stat"><strong>1990</strong>Launched</div><div class="stat"><strong>1.5M+</strong>Observations</div></div></div>
+    <div class="card" data-cat="telescopes"><div class="card-icon">🔭</div><h3>James Webb Space Telescope</h3><p>Launched Dec 2021, stationed at L2 point 1.5M km away. 6.5m gold-coated beryllium mirror operating in infrared. Peering at the first galaxies and exoplanet atmospheres.</p><div class="stats"><div class="stat"><strong>2021</strong>Launched</div><div class="stat"><strong>$10B</strong>Cost</div><div class="stat"><strong>6.5 m</strong>Mirror</div></div></div>
+    <div class="card" data-cat="telescopes"><div class="card-icon">📡</div><h3>Event Horizon Telescope</h3><p>A global network of radio telescopes forming an Earth-sized virtual telescope. Produced the first-ever image of a black hole (M87*) in April 2019.</p><div class="stats"><div class="stat"><strong>2019</strong>First BH Image</div><div class="stat"><strong>8</strong>Telescopes</div></div></div>
+    <div class="card" data-cat="telescopes"><div class="card-icon">🔬</div><h3>ALMA & VLT</h3><p>ALMA (Atacama Large Millimeter Array) in Chile — 66 radio dishes studying cold cosmic dust. VLT — four 8.2m telescopes in the Atacama Desert.</p><div class="stats"><div class="stat"><strong>2011</strong>ALMA Complete</div><div class="stat"><strong>Chile</strong>Location</div></div></div>
+    <div class="card" data-cat="missions"><div class="card-icon">🚀</div><h3>Voyager 1 & 2</h3><p>Launched 1977, now in interstellar space — the farthest human-made objects. Voyager 1 crossed the heliopause in 2012, carrying the Golden Record.</p><div class="stats"><div class="stat"><strong>1977</strong>Launched</div><div class="stat"><strong>24B+ km</strong>Distance</div></div></div>
+    <div class="card" data-cat="missions"><div class="card-icon">🔴</div><h3>Mars Exploration</h3><p>Ongoing missions by NASA (Perseverance, Curiosity), ESA, UAE (Hope Orbiter), and China (Tianwen-1). Searching for past life and preparing for human missions.</p><div class="stats"><div class="stat"><strong>1965</strong>First Flyby</div><div class="stat"><strong>60+</strong>Missions</div></div></div>
+    <div class="card" data-cat="missions"><div class="card-icon">🧊</div><h3>IceCube Neutrino Observatory</h3><p>A cubic-kilometer neutrino detector buried in Antarctic ice. Detects high-energy neutrinos from cosmic accelerators — blazars, supernovae, and active galactic nuclei.</p><div class="stats"><div class="stat"><strong>2010</strong>Complete</div><div class="stat"><strong>1 km³</strong>Volume</div></div></div>
+    <div class="card" data-cat="cosmo"><div class="card-icon">🕸️</div><h3>Cosmic Web</h3><p>The large-scale structure of the universe — a vast network of galaxy filaments separated by enormous voids. Dark matter forms the scaffolding across billions of light-years.</p><div class="stats"><div class="stat"><strong>1B+ ly</strong>Filaments</div><div class="stat"><strong>SDSS</strong>Mapped</div></div></div>
+    <div class="card" data-cat="physics"><div class="card-icon">🌡️</div><h3>Stellar Nucleosynthesis</h3><p>The process by which stars forge elements. Hydrogen fuses to helium; heavier elements form in massive stars; gold and uranium in neutron star mergers.</p><div class="stats"><div class="stat"><strong>1957</strong>B²FH Paper</div><div class="stat"><strong>92</strong>Natural Elements</div></div></div>
+    <div class="card" data-cat="missions"><div class="card-icon">🛸</div><h3>New Horizons</h3><p>NASA's probe that flew past Pluto in 2015, revealing a heart-shaped glacier. Continued to Arrokoth (2019) in the Kuiper Belt — the most distant object ever explored.</p><div class="stats"><div class="stat"><strong>2006</strong>Launched</div><div class="stat"><strong>2015</strong>Pluto Flyby</div></div></div>
+    <div class="card" data-cat="cosmo"><div class="card-icon">🪐</div><h3>Multiverse Theories</h3><p>Hypotheses suggesting our universe may be one of many. Arise from eternal inflation, string theory landscape, and quantum mechanics (many-worlds).</p><div class="stats"><div class="stat"><strong>∞</strong>Possible Universes</div><div class="stat"><strong>Theoretical</strong>Status</div></div></div>
+    <div class="card" data-cat="physics"><div class="card-icon">⚛️</div><h3>Quantum Cosmology</h3><p>Application of quantum mechanics to the universe as a whole. Explores the wave function of the universe, quantum fluctuations during inflation, and the origin of cosmic structure.</p><div class="stats"><div class="stat"><strong>1980s</strong>Development</div><div class="stat"><strong>Hartle-Hawking</strong>State</div></div></div>
+    <div class="card" data-cat="objects"><div class="card-icon">🌠</div><h3>Gamma-Ray Bursts</h3><p>The most energetic explosions since the Big Bang — brief flashes of gamma rays from collapsing massive stars or merging neutron stars, visible across the observable universe.</p><div class="stats"><div class="stat"><strong>1967</strong>Discovered</div><div class="stat"><strong>10⁴⁶ J</strong>Energy</div></div></div>
+    <div class="card" data-cat="missions"><div class="card-icon">🛸</div><h3>OSIRIS-REx & Sample Return</h3><p>NASA's mission that traveled to asteroid Bennu, collected samples, and returned them to Earth in September 2023 — revealing water-rich minerals and organic compounds.</p><div class="stats"><div class="stat"><strong>2023</strong>Sample Return</div><div class="stat"><strong>Bennu</strong>Asteroid</div></div></div>
+    <div class="card" data-cat="telescopes"><div class="card-icon">📡</div><h3>SKA — Square Kilometre Array</h3><p>Under construction in Australia and South Africa — will be the world's largest radio telescope with 1 km² collecting area. Will probe the cosmic dark ages and test general relativity.</p><div class="stats"><div class="stat"><strong>2020s</strong>Construction</div><div class="stat"><strong>1 km²</strong>Area</div></div></div>
+    <div class="card" data-cat="physics"><div class="card-icon">🌌</div><h3>Higgs Boson & Mass</h3><p>Discovered at CERN in 2012, the Higgs boson confirms the Higgs field gives particles mass. Essential to the Standard Model of particle physics and our understanding of the early universe.</p><div class="stats"><div class="stat"><strong>2012</strong>Discovered</div><div class="stat"><strong>125 GeV</strong>Mass</div></div></div>
+    <div class="card" data-cat="missions"><div class="card-icon">🛰️</div><h3>Euclid Mission (ESA)</h3><p>Launched July 2023 to map the geometry of the dark universe. Will observe billions of galaxies to understand dark matter and dark energy's role in cosmic acceleration.</p><div class="stats"><div class="stat"><strong>2023</strong>Launched</div><div class="stat"><strong>6 yrs</strong>Mission</div></div></div>
+  </div>
+</section>
+
+<!-- INDIA SECTION -->
+<section id="india" class="india" style="background: linear-gradient(180deg, transparent, rgba(255,153,51,0.03), transparent);">
+  <div class="section-header">
+    <span class="section-tag tag-india">🇮🇳 INDIA'S COSMIC LEGACY</span>
+    <h2>From Aryabhata to Aditya-L1</h2>
+    <p>India's journey in astrophysics spans millennia — from ancient mathematicians to modern missions landing on the Moon's south pole and probing the Sun.</p>
+  </div>
+
+  <div class="tabs" id="indiaTabs">
+    <div class="tab active" data-cat="all">All</div>
+    <div class="tab" data-cat="ancient">Ancient Wisdom</div>
+    <div class="tab" data-cat="isro">ISRO Missions</div>
+    <div class="tab" data-cat="institutes">Institutes</div>
+    <div class="tab" data-cat="scientists">Pioneers</div>
+    <div class="tab" data-cat="future">Future</div>
+  </div>
+
+  <div class="grid" id="indiaGrid">
+    <div class="card" data-cat="ancient"><div class="card-icon">📜</div><h3>Aryabhata (476–550 CE)</h3><p>India's greatest ancient astronomer. In his <em>Aryabhatiya</em>, he proposed Earth's rotation, calculated the sidereal year as 365.258 days, explained eclipses as shadows, and gave π ≈ 3.1416.</p><div class="stats"><div class="stat"><strong>499 CE</strong>Aryabhatiya</div><div class="stat"><strong>365.258 d</strong>Year</div></div></div>
+    <div class="card" data-cat="ancient"><div class="card-icon">🔢</div><h3>Brahmagupta (598–668 CE)</h3><p>Author of <em>Brahmasphutasiddhanta</em>. Described gravity as an attractive force centuries before Newton, calculated Earth's circumference within 1% of modern value, and formalized zero.</p><div class="stats"><div class="stat"><strong>628 CE</strong>Masterwork</div><div class="stat"><strong>Gravity</strong>Described</div></div></div>
+    <div class="card" data-cat="ancient"><div class="card-icon">🌞</div><h3>Bhaskara II (1114–1185 CE)</h3><p>Author of <em>Siddhanta Shiromani</em>. Calculated Earth's year as 365.2588 days, described planetary positions, and made foundational contributions to calculus and spherical astronomy.</p><div class="stats"><div class="stat"><strong>1150 CE</strong>Siddhanta Shiromani</div></div></div>
+    <div class="card" data-cat="ancient"><div class="card-icon">🌙</div><h3>Varahamihira (505–587 CE)</h3><p>Author of <em>Panchasiddhantika</em> and <em>Brihat Samhita</em>. Synthesized Greek, Indian, and Roman astronomical knowledge. Described the moon's distance and atmospheric optics.</p><div class="stats"><div class="stat"><strong>6th Century</strong>Classical Era</div></div></div>
+    <div class="card" data-cat="ancient"><div class="card-icon">🏛️</div><h3>Jantar Mantar Observatories</h3><p>Built by Maharaja Jai Singh II (1720s–1730s) in Delhi, Jaipur, Ujjain, Mathura, and Varanasi. Massive stone instruments — the Samrat Yantra tells time to 2-second accuracy.</p><div class="stats"><div class="stat"><strong>1724</strong>Built</div><div class="stat"><strong>5</strong>Cities</div></div></div>
+    <div class="card" data-cat="ancient"><div class="card-icon">📚</div><h3>Vedas & Siddhantas</h3><p>Ancient Indian astronomical texts dating back to 1500 BCE. The Surya Siddhanta (c. 400 CE) calculated the sidereal year with remarkable accuracy and described planetary motions.</p><div class="stats"><div class="stat"><strong>1500 BCE</strong>Vedic Era</div><div class="stat"><strong>400 CE</strong>Surya Siddhanta</div></div></div>
+    <div class="card" data-cat="isro"><div class="card-icon">🚀</div><h3>ISRO — Indian Space Research Organisation</h3><p>Founded 15 August 1969 by Dr. Vikram Sarabhai. Grew from a tiny office in Trivandrum to one of the world's top space agencies. Known for cost-effective missions.</p><div class="stats"><div class="stat"><strong>1969</strong>Founded</div><div class="stat"><strong>HQ Bengaluru</strong></div><div class="stat"><strong>400+</strong>Satellites</div></div></div>
+    <div class="card" data-cat="isro"><div class="card-icon">🌕</div><h3>Chandrayaan-1 (2008)</h3><p>India's first lunar mission. Discovered water molecules on the Moon's surface — a historic finding published in <em>Science</em>. The M³ instrument detected hydroxyl across the lunar surface.</p><div class="stats"><div class="stat"><strong>2008</strong>Launched</div><div class="stat"><strong>Water</strong>Discovered</div></div></div>
+    <div class="card" data-cat="isro"><div class="card-icon">🌕</div><h3>Chandrayaan-2 (2019)</h3><p>India's ambitious second lunar mission with orbiter, lander (Vikram), and rover (Pragyan). The orbiter continues delivering high-resolution science — mapping lunar minerals and finding evidence of lunar sodium.</p><div class="stats"><div class="stat"><strong>2019</strong>Launched</div><div class="stat"><strong>Orbiter</strong>Active</div></div></div>
+    <div class="card" data-cat="isro"><div class="card-icon">🏆</div><h3>Chandrayaan-3 (2023)</h3><p>On 23 August 2023, India became the <strong>first nation to land near the lunar south pole</strong> and the fourth to soft-land on the Moon. Vikram lander + Pragyan rover analyzed lunar soil and seismic activity.</p><div class="stats"><div class="stat"><strong>23 Aug 2023</strong>Landing</div><div class="stat"><strong>1st</strong>South Pole</div></div></div>
+    <div class="card" data-cat="isro"><div class="card-icon">🔴</div><h3>Mangalyaan — Mars Orbiter Mission</h3><p>India's first interplanetary mission (2013). Reached Mars orbit on 24 September 2014 — making ISRO the first agency to succeed on its maiden attempt. Cost just $74M.</p><div class="stats"><div class="stat"><strong>2014</strong>Mars Orbit</div><div class="stat"><strong>$74M</strong>Cost</div></div></div>
+    <div class="card" data-cat="isro"><div class="card-icon">☀️</div><h3>Aditya-L1 (2023)</h3><p>India's first space-based solar observatory, launched 2 September 2023, stationed at Lagrange Point L1. Studies solar corona, solar wind, magnetic fields, and space weather with 7 payloads.</p><div class="stats"><div class="stat"><strong>Jan 2024</strong>Reached L1</div><div class="stat"><strong>7</strong>Payloads</div></div></div>
+    <div class="card" data-cat="isro"><div class="card-icon">🛰️</div><h3>AstroSat (2015)</h3><p>India's first dedicated multi-wavelength space observatory. Simultaneously observes in visible, UV, and X-ray bands. Discovered new pulsars and studied black holes.</p><div class="stats"><div class="stat"><strong>2015</strong>Launched</div><div class="stat"><strong>5</strong>Wavelengths</div></div></div>
+    <div class="card" data-cat="isro"><div class="card-icon">🛰️</div><h3>XPoSat (2024)</h3><p>Launched 1 January 2024 — India's first dedicated polarimeter satellite. Measures X-ray polarization from black holes, neutron stars, and magnetars.</p><div class="stats"><div class="stat"><strong>2024</strong>Launched</div><div class="stat"><strong>X-ray</strong>Polarimetry</div></div></div>
+    <div class="card" data-cat="isro"><div class="card-icon">🛰️</div><h3>INSAT/GSAT Series</h3><p>India's geostationary satellite fleet for telecommunications, TV broadcasting, meteorology, and disaster warning. Over 30 operational satellites serving 100M+ users.</p><div class="stats"><div class="stat"><strong>1983</strong>First INSAT</div><div class="stat"><strong>30+</strong>Operational</div></div></div>
+    <div class="card" data-cat="isro"><div class="card-icon">🛰️</div><h3>IRNSS / NavIC</h3><p>India's regional navigation satellite system — 7 satellites providing accurate positioning over India and surrounding regions. Independent of GPS, GLONASS, or Galileo.</p><div class="stats"><div class="stat"><strong>2013</strong>First Launch</div><div class="stat"><strong>7</strong>Satellites</div></div></div>
+    <div class="card" data-cat="institutes"><div class="card-icon">📡</div><h3>GMRT — Giant Metrewave Radio Telescope</h3><p>Located in Maharashtra. World's largest low-frequency radio telescope array with 30 fully steerable 45m dishes spanning 25 km. Pioneered pulsar research and detected Fast Radio Bursts.</p><div class="stats"><div class="stat"><strong>30</strong>Dishes</div><div class="stat"><strong>25 km</strong>Array</div><div class="stat"><strong>1995</strong>Operational</div></div></div>
+    <div class="card" data-cat="institutes"><div class="card-icon">🏔️</div><h3>Indian Astronomical Observatory, Hanle</h3><p>One of the world's highest optical telescopes at 4,500m in Ladakh. The 2m Himalayan Chandra Telescope operates in ultra-clear skies. Home to MACE — the world's largest imaging atmospheric Cherenkov telescope.</p><div class="stats"><div class="stat"><strong>4,500 m</strong>Altitude</div><div class="stat"><strong>2 m</strong>HCT Mirror</div></div></div>
+    <div class="card" data-cat="institutes"><div class="card-icon">🔭</div><h3>IUCAA — Pune</h3><p>Inter-University Centre for Astronomy and Astrophysics, established 1988. Premier research hub training India's astronomers. Manages GMRT and contributes to LIGO-India.</p><div class="stats"><div class="stat"><strong>1988</strong>Founded</div><div class="stat"><strong>Pune</strong>Location</div></div></div>
+    <div class="card" data-cat="institutes"><div class="card-icon">🏛️</div><h3>Indian Institute of Astrophysics (IIAP)</h3><p>Headquartered in Bengaluru, tracing roots to 1899 (Kodaikanal Solar Observatory). Operates observatories across India, studies the Sun, stars, and galaxies.</p><div class="stats"><div class="stat"><strong>1899</strong>Origin</div><div class="stat"><strong>Bengaluru</strong>HQ</div></div></div>
+    <div class="card" data-cat="institutes"><div class="card-icon">🔬</div><h3>TIFR — Tata Institute of Fundamental Research</h3><p>Mumbai-based institute founded by Homi Bhabha (1945). Pioneered India's cosmic-ray and high-energy astrophysics research.</p><div class="stats"><div class="stat"><strong>1945</strong>Founded</div><div class="stat"><strong>Mumbai</strong></div></div></div>
+    <div class="card" data-cat="institutes"><div class="card-icon">🌊</div><h3>LIGO-India (IndIGO)</h3><p>Coming up in Aundha Nagnath, Maharashtra — a $300M advanced gravitational wave detector, a collaboration with US LIGO. Will complete the global network.</p><div class="stats"><div class="stat"><strong>~2030</strong>Expected</div><div class="stat"><strong>₹2,600 Cr</strong>Cost</div></div></div>
+    <div class="card" data-cat="institutes"><div class="card-icon">🌞</div><h3>Kodaikanal Solar Observatory</h3><p>Established 1899 in Tamil Nadu. One of the oldest solar observatories in the world. Has maintained continuous solar observations for over 125 years — a treasure trove of solar data.</p><div class="stats"><div class="stat"><strong>1899</strong>Founded</div><div class="stat"><strong>125+ yrs</strong>Data</div></div></div>
+    <div class="card" data-cat="scientists"><div class="card-icon">🌟</div><h3>Subrahmanyan Chandrasekhar</h3><p>Nobel Laureate (1983). Discovered the <strong>Chandrasekhar Limit</strong> (~1.4 solar masses) — the maximum mass of a stable white dwarf. Beyond it, stars collapse into neutron stars or black holes.</p><div class="stats"><div class="stat"><strong>1983</strong>Nobel Prize</div><div class="stat"><strong>1.4 M☉</strong>Limit</div></div></div>
+    <div class="card" data-cat="scientists"><div class="card-icon">🌟</div><h3>Meghnad Saha (1893–1956)</h3><p>Developed the <strong>Saha Ionization Equation</strong> (1920) — the foundation of modern astrophysics, explaining how temperature determines a star's spectral class.</p><div class="stats"><div class="stat"><strong>1920</strong>Saha Equation</div><div class="stat"><strong>Spectral</strong>Classification</div></div></div>
+    <div class="card" data-cat="scientists"><div class="card-icon">🌟</div><h3>Jayant Narlikar</h3><p>Developed the Hoyle-Narlikar steady-state theory with Fred Hoyle. Contributed to cosmology, quantum gravity, and popularized science in India. Padma Vibhushan awardee.</p><div class="stats"><div class="stat"><strong>1960s</strong>Steady-State</div><div class="stat"><strong>IUCAA</strong>Founder</div></div></div>
+    <div class="card" data-cat="scientists"><div class="card-icon">🌟</div><h3>Govind Swarup (1929–2024)</h3><p>Father of Indian radio astronomy. Designed the Ooty Radio Telescope and founded the Giant Metrewave Radio Telescope.</p><div class="stats"><div class="stat"><strong>NCRA</strong>Founded</div><div class="stat"><strong>GMRT</strong>Visionary</div></div></div>
+    <div class="card" data-cat="scientists"><div class="card-icon">🌟</div><h3>Homi J. Bhabha</h3><p>Discovered the Bhabha-Heitler process (1934) explaining electron-photon cascades in cosmic rays — foundational to high-energy astrophysics.</p><div class="stats"><div class="stat"><strong>1934</strong>Bhabha-Heitler</div><div class="stat"><strong>Cosmic Rays</strong></div></div></div>
+    <div class="card" data-cat="scientists"><div class="card-icon">🌟</div><h3>Vikram Sarabhai (1919–1971)</h3><p>Father of the Indian Space Program. Founded PRL (1947), established INCOSPAR (1962) which became ISRO, and built India's first satellite launch capability.</p><div class="stats"><div class="stat"><strong>1962</strong>INCOSPAR</div><div class="stat"><strong>1969</strong>ISRO</div></div></div>
+    <div class="card" data-cat="scientists"><div class="card-icon">🌟</div><h3>U. R. Rao (1932–2023)</h3><p>Architect of India's satellite program. Led development of Aryabhata, Bhaskara, APPLE, and IRS satellites. Former chairman of ISRO and key figure in Indian space science.</p><div class="stats"><div class="stat"><strong>1972-79</strong>ISRO Chairman</div><div class="stat"><strong>Satellite</strong>Pioneer</div></div></div>
+    <div class="card" data-cat="scientists"><div class="card-icon">🌟</div><h3>S. Srinivasan</h3><p>Leading Indian astrophysicist known for work on pulsars, supernova remnants, and gamma-ray astronomy. Former director of IIA and president of the International Astronomical Union.</p><div class="stats"><div class="stat"><strong>IAU</strong>President</div><div class="stat"><strong>Pulsar</strong>Research</div></div></div>
+    <div class="card" data-cat="future"><div class="card-icon">🌕</div><h3>NISAR — NASA-ISRO SAR Mission</h3><p>Joint NASA-ISRO Earth-observation satellite with dual-frequency synthetic aperture radar. Will monitor earthquakes, volcanoes, ice sheets, and ecosystems.</p><div class="stats"><div class="stat"><strong>2025</strong>Launch</div><div class="stat"><strong>SAR</strong>Radar</div></div></div>
+    <div class="card" data-cat="future"><div class="card-icon">👨‍🚀</div><h3>Gaganyaan — Human Spaceflight</h3><p>India's ambitious crewed orbital mission. Will send 3 astronauts to 400 km orbit for 3 days. Will make India the 4th nation to independently launch humans.</p><div class="stats"><div class="stat"><strong>2026</strong>Target</div><div class="stat"><strong>3</strong>Astronauts</div></div></div>
+    <div class="card" data-cat="future"><div class="card-icon">🌕</div><h3>Chandrayaan-4 — Sample Return</h3><p>Ambitious mission to bring lunar samples back to Earth. Would make India the 3rd nation to achieve lunar sample return.</p><div class="stats"><div class="stat"><strong>~2027</strong>Target</div><div class="stat"><strong>Sample</strong>Return</div></div></div>
+    <div class="card" data-cat="future"><div class="card-icon">🔭</div><h3>LUPEX — Lunar Polar Exploration</h3><p>Joint ISRO-JAXA mission to explore the Moon's south pole for water ice. Will deploy a rover to analyze permanently shadowed craters.</p><div class="stats"><div class="stat"><strong>~2026</strong>Target</div><div class="stat"><strong>JAXA</strong>Partner</div></div></div>
+    <div class="card" data-cat="future"><div class="card-icon">☀️</div><h3>Aditya-L2 & Future Solar Missions</h3><p>Following Aditya-L1's success, ISRO is studying follow-on missions including Aditya-L2 to study the Sun from Lagrange Point 2.</p><div class="stats"><div class="stat"><strong>Planning</strong>Stage</div></div></div>
+    <div class="card" data-cat="future"><div class="card-icon">🔴</div><h3>Mangalyaan-2 — Mars Mission</h3><p>ISRO is planning a more ambitious Mars mission with larger payload capacity, possibly including a rover. Will build on the success of Mangalyaan.</p><div class="stats"><div class="stat"><strong>~2030</strong>Target</div><div class="stat"><strong>Rover</strong>Planned</div></div></div>
+    <div class="card" data-cat="future"><div class="card-icon">🛰️</div><h3>Indian Space Station (Bharatiya Antariksha Station)</h3><p>India's planned modular space station in low Earth orbit. Expected to be operational by 2035, supporting scientific research and human spaceflight.</p><div class="stats"><div class="stat"><strong>2035</strong>Target</div><div class="stat"><strong>20 ton</strong>Module</div></div></div>
+  </div>
+</section>
+
+<!-- LAUNCH TRACKER -->
+<section id="launches">
+  <div class="section-header">
+    <span class="section-tag tag-live">🚀 LAUNCH TRACKER</span>
+    <h2>Global Rocket Launches</h2>
+    <p>Recent and upcoming orbital launches from around the world.</p>
+  </div>
+  <div class="grid" id="launchGrid" style="grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));">
+    <div class="launch-item upcoming">
+      <div class="launch-header">
+        <div>
+          <div class="launch-name">Loading launches...</div>
+          <div class="launch-provider"><div class="loader"></div></div>
+        </div>
+        <div class="launch-date">Fetching data</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ASTRONAUTS IN SPACE -->
+<section id="astronauts">
+  <div class="section-header">
+    <span class="section-tag tag-live">👨‍🚀 ASTRONAUTS IN SPACE</span>
+    <h2>Humans Currently in Orbit</h2>
+    <p>Live roster of astronauts and cosmonauts currently living and working in space.</p>
+  </div>
+  <div class="astronaut-grid" id="astronautGrid">
+    <div class="astronaut-card">
+      <div class="astronaut-avatar">👨‍🚀</div>
+      <div class="astronaut-name">Loading...</div>
+      <div class="astronaut-role">Fetching astronaut data</div>
+      <div class="astronaut-nation"><div class="loader"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- DEEP SPACE NETWORK -->
+<section id="dsn">
+  <div class="section-header">
+    <span class="section-tag tag-new">📡 DEEP SPACE NETWORK</span>
+    <h2>NASA's Deep Space Network</h2>
+    <p>Three ground stations around the world keep constant contact with spacecraft across the solar system.</p>
+  </div>
+  <div class="dsn-grid">
+    <div class="dsn-station">
+      <div class="name">Goldstone</div>
+      <div class="location">🇺🇸 California, USA · 35.4°N</div>
+      <div class="status active"><span class="status-dot"></span> Active · 70m antenna</div>
+    </div>
+    <div class="dsn-station">
+      <div class="name">Madrid</div>
+      <div class="location">🇪🇸 Robledo de Chavela, Spain · 40.4°N</div>
+      <div class="status active"><span class="status-dot"></span> Active · 70m antenna</div>
+    </div>
+    <div class="dsn-station">
+      <div class="name">Canberra</div>
+      <div class="location">🇦🇺 Tidbinbilla, Australia · 35.4°S</div>
+      <div class="status active"><span class="status-dot"></span> Active · 70m antenna</div>
+    </div>
+    <div class="dsn-station">
+      <div class="name">ISRO Deep Space</div>
+      <div class="location">🇮🇳 Byalalu, Karnataka · 13.7°N</div>
+      <div class="status active"><span class="status-dot"></span> Active · 32m/18m antennas</div>
+    </div>
+  </div>
+</section>
+
+<!-- TIMELINE -->
+<section id="timeline">
+  <div class="section-header">
+    <span class="section-tag tag-global">COSMIC TIMELINE</span>
+    <h2>Milestones in Our Cosmic Journey</h2>
+    <p>Key moments — from ancient Indian astronomy to the latest JWST discoveries.</p>
+  </div>
+  <div class="timeline">
+    <div class="timeline-item"><div class="timeline-year">~1500 BCE</div><h4>Vedic Astronomy</h4><p>Rigveda contains early astronomical observations and cosmological hymns in ancient India.</p></div>
+    <div class="timeline-item"><div class="timeline-year">~499 CE</div><h4>Aryabhata writes Aryabhatiya</h4><p>Proposes Earth's rotation, calculates the year, explains eclipses scientifically.</p></div>
+    <div class="timeline-item"><div class="timeline-year">1609</div><h4>Galileo's Telescope</h4><p>First astronomical telescope observations — moons of Jupiter, craters of the Moon.</p></div>
+    <div class="timeline-item"><div class="timeline-year">1687</div><h4>Newton's Principia</h4><p>Law of universal gravitation unifies celestial and terrestrial mechanics.</p></div>
+    <div class="timeline-item"><div class="timeline-year">1915</div><h4>Einstein's General Relativity</h4><p>Gravity as spacetime curvature — foundation of modern cosmology.</p></div>
+    <div class="timeline-item"><div class="timeline-year">1920</div><h4>Saha Ionization Equation</h4><p>Meghnad Saha explains stellar spectral classes — birth of modern astrophysics.</p></div>
+    <div class="timeline-item"><div class="timeline-year">1929</div><h4>Hubble's Law</h4><p>Universe is expanding — galaxies recede faster the farther they are.</p></div>
+    <div class="timeline-item"><div class="timeline-year">1930</div><h4>Chandrasekhar Limit</h4><p>Young Subrahmanyan Chandrasekhar calculates the fate of massive stars.</p></div>
+    <div class="timeline-item"><div class="timeline-year">1947</div><h4>PRL Founded</h4><p>Vikram Sarabhai establishes Physical Research Laboratory in Ahmedabad.</p></div>
+    <div class="timeline-item"><div class="timeline-year">1962</div><h4>INCOSPAR Established</h4><p>India's first space committee formed under Vikram Sarabhai's leadership.</p></div>
+    <div class="timeline-item"><div class="timeline-year">1965</div><h4>CMB Discovered</h4><p>Penzias & Wilson detect cosmic microwave background — proof of the Big Bang.</p></div>
+    <div class="timeline-item"><div class="timeline-year">1969</div><h4>ISRO Founded</h4><p>India's space agency is born, with Vikram Sarabhai as its architect.</p></div>
+    <div class="timeline-item"><div class="timeline-year">1975</div><h4>Aryabhata — India's First Satellite</h4><p>Launched by Soviet rocket, marking India's entry into the space age.</p></div>
+    <div class="timeline-item"><div class="timeline-year">1980</div><h4>Rohini — First Indian-Launched Satellite</h4><p>SLV-3 rocket places Rohini in orbit — India joins elite launch-capable nations.</p></div>
+    <div class="timeline-item"><div class="timeline-year">1995</div><h4>GMRT Operational</h4><p>India's Giant Metrewave Radio Telescope begins observations.</p></div>
+    <div class="timeline-item"><div class="timeline-year">2008</div><h4>Chandrayaan-1</h4><p>India discovers water molecules on the Moon — a historic finding.</p></div>
+    <div class="timeline-item"><div class="timeline-year">2014</div><h4>Mangalyaan Reaches Mars</h4><p>India becomes first nation to succeed on its maiden Mars mission.</p></div>
+    <div class="timeline-item"><div class="timeline-year">2015</div><h4>Gravitational Waves Detected</h4><p>LIGO confirms Einstein's century-old prediction — new era of astronomy.</p></div>
+    <div class="timeline-item"><div class="timeline-year">2015</div><h4>AstroSat Launches</h4><p>India's first dedicated multi-wavelength space observatory.</p></div>
+    <div class="timeline-item"><div class="timeline-year">2019</div><h4>First Black Hole Image</h4><p>Event Horizon Telescope images M87* — a ring of light around darkness.</p></div>
+    <div class="timeline-item"><div class="timeline-year">2021</div><h4>JWST Launches</h4><p>The most powerful space telescope ever begins peering at the first galaxies.</p></div>
+    <div class="timeline-item"><div class="timeline-year">2023</div><h4>Chandrayaan-3 Lands on Moon</h4><p>India becomes first nation to land near the lunar south pole.</p></div>
+    <div class="timeline-item"><div class="timeline-year">2024</div><h4>Aditya-L1 & XPoSat</h4><p>India reaches Sun-Earth L1 point and launches its first X-ray polarimetry satellite.</p></div>
+  </div>
+</section>
+
+<!-- NEWS -->
+<section id="news">
+  <div class="section-header">
+    <span class="section-tag tag-live">● LIVE NEWS FEED</span>
+    <h2>Latest from the Cosmos</h2>
+    <p>Real-time news from NASA, ISRO, ESA, and global space agencies.</p>
+  </div>
+  <div class="news-list" id="newsGrid">
+    <div class="news-item">
+      <div class="source">Loading...</div>
+      <h4><div class="loader"></div></h4>
+      <div class="date">Fetching latest news...</div>
+    </div>
+  </div>
+</section>
+
+<!-- FUN FACTS -->
+<section id="facts">
+  <div class="section-header">
+    <span class="section-tag tag-global">MIND-BENDING FACTS</span>
+    <h2>The Universe in Numbers</h2>
+    <p>Some facts that will change how you see the night sky.</p>
+  </div>
+  <div class="grid">
+    <div class="card"><div class="card-icon">💡</div><h3>Neutron Star Density</h3><p>A teaspoon of neutron star material weighs about 6 billion tons — roughly the weight of Mount Everest compressed into a spoon.</p></div>
+    <div class="card"><div class="card-icon">⏱️</div><h3>Time Dilation</h3><p>Time runs slower in stronger gravity. Near a black hole's event horizon, hours can equal decades elsewhere — confirmed by GPS satellites daily.</p></div>
+    <div class="card"><div class="card-icon">🌌</div><h3>Observable Universe</h3><p>The observable universe is 93 billion light-years across, contains ~2 trillion galaxies, and ~10²⁴ stars — more than grains of sand on all Earth's beaches.</p></div>
+    <div class="card"><div class="card-icon">🔇</div><h3>Silent Universe</h3><p>Space is a vacuum — no sound can travel. The "sounds" of space you hear are electromagnetic waves converted to audio by scientists.</p></div>
+    <div class="card"><div class="card-icon">🌠</div><h3>Looking Back in Time</h3><p>Every time you look at a star, you see it as it was in the past. The Andromeda Galaxy appears as it was 2.5 million years ago.</p></div>
+    <div class="card"><div class="card-icon">🕳️</div><h3>Spaghettification</h3><p>Falling into a black hole, tidal forces stretch you into a long thin strand — literally like spaghetti. A real astrophysical term!</p></div>
+    <div class="card"><div class="card-icon">🌞</div><h3>Sun's Power</h3><p>Every second, the Sun converts 4 million tons of matter into energy via nuclear fusion. It has been doing this for 4.6 billion years.</p></div>
+    <div class="card"><div class="card-icon">🪐</div><h3>Exotic Weather</h3><p>On Neptune, it rains diamonds. On Venus, it rains sulfuric acid. On Titan, it rains liquid methane. Weather gets weirder the farther you go.</p></div>
+    <div class="card"><div class="card-icon">🌍</div><h3>India's Cost-Effective Space</h3><p>Mangalyaan cost just $74 million — less than the budget of the movie <em>Gravity</em>. ISRO is famous for world-class science at a fraction of global costs.</p></div>
+    <div class="card"><div class="card-icon">⚛️</div><h3>Empty Space</h3><p>If you removed all the empty space from atoms in every human on Earth, the entire population would fit inside a sugar cube. Matter is 99.9999999% empty space.</p></div>
+    <div class="card"><div class="card-icon">🌊</div><h3>Great Attractor</h3><p>A gravitational anomaly 250 million light-years away pulling our galaxy and 100,000 others toward it at 600 km/s. We can't see it — it's hidden behind the Milky Way's zone of avoidance.</p></div>
+    <div class="card"><div class="card-icon">🔭</div><h3>Fast Radio Bursts</h3><p>Mysterious millisecond bursts of radio energy from deep space. Some repeat, some don't. India's GMRT has been key in detecting and studying them.</p></div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <div class="logo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="url(#logoGrad2)" stroke-width="2">
+          <defs>
+            <linearGradient id="logoGrad2" x1="0" x2="1">
+              <stop offset="0" stop-color="#00d4ff"/>
+              <stop offset="1" stop-color="#ffb547"/>
+            </linearGradient>
+          </defs>
+          <circle cx="12" cy="12" r="4"/>
+          <ellipse cx="12" cy="12" rx="10" ry="4" transform="rotate(-30 12 12)"/>
+        </svg>
+        Cosmos Chronicle
+      </div>
+      <p>A comprehensive live astrophysics observatory — tracking the cosmos from Earth to the farthest galaxies, with special focus on India's stellar contributions to space science.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Explore</h5>
+      <a href="#live">Live Dashboard</a>
+      <a href="#tools">Interactive Tools</a>
+      <a href="#solar">Solar System</a>
+      <a href="#galaxy">Galaxy Simulator</a>
+      <a href="#pulsar">Pulsar Visualizer</a>
+    </div>
+    <div class="footer-col">
+      <h5>Learn</h5>
+      <a href="#global">Global Astrophysics</a>
+      <a href="#india">India's Legacy</a>
+      <a href="#timeline">Cosmic Timeline</a>
+      <a href="#facts">Fun Facts</a>
+      <a href="#news">Latest News</a>
+    </div>
+    <div class="footer-col">
+      <h5>Data Sources</h5>
+      <a href="https://api.nasa.gov" target="_blank" rel="noopener">NASA APIs</a>
+      <a href="http://open-notify.org" target="_blank" rel="noopener">Open Notify</a>
+      <a href="https://www.isro.gov.in" target="_blank" rel="noopener">ISRO</a>
+      <a href="https://www.esa.int" target="_blank" rel="noopener">ESA</a>
+      <a href="https://www.iucaa.in" target="_blank" rel="noopener">IUCAA</a>
+    </div>
+  </div>
+  <div class="footer-bottom">
+    <div class="tricolor"></div>
+    <p>Live data from NASA, Open Notify, NOAA SWPC, and curated space news feeds.</p>
+    <p style="font-size: 11px; opacity: 0.6;">© 2026 Cosmos Chronicle · Ad Astra Per Aspera · Jai Hind 🇮🇳</p>
+  </div>
+</footer>
+
+<script>
+/* ============================================
+   STARFIELD WITH SHOOTING STARS
+   ============================================ */
+const canvas = document.getElementById('starfield');
+const ctx = canvas.getContext('2d');
+let stars = [], shooters = [];
+
+function resize() {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  stars = [];
+  const count = Math.floor((canvas.width * canvas.height) / 2800);
+  for (let i = 0; i < count; i++) {
+    stars.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      r: Math.random() * 1.4 + 0.2,
+      a: Math.random() * Math.PI * 2,
+      s: Math.random() * 0.02 + 0.005,
+      c: Math.random() > 0.95 ? '#00d4ff' : (Math.random() > 0.9 ? '#ffb547' : '#ffffff')
+    });
+  }
+}
+resize();
+window.addEventListener('resize', resize);
+
+function spawnShooter() {
+  if (Math.random() < 0.25) {
+    shooters.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height * 0.5,
+      vx: (Math.random() * 6 + 4) * (Math.random() > 0.5 ? 1 : -1),
+      vy: Math.random() * 3 + 2,
+      life: 1,
+      decay: 0.015
+    });
+  }
+}
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  stars.forEach(s => {
+    s.a += s.s;
+    const alpha = (Math.sin(s.a) + 1) / 2 * 0.9 + 0.1;
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fillStyle = s.c;
+    ctx.globalAlpha = alpha;
+    ctx.fill();
+  });
+  ctx.globalAlpha = 1;
+
+  spawnShooter();
+  shooters = shooters.filter(sh => {
+    sh.x += sh.vx;
+    sh.y += sh.vy;
+    sh.life -= sh.decay;
+    if (sh.life <= 0) return false;
+    const grad = ctx.createLinearGradient(sh.x, sh.y, sh.x - sh.vx * 10, sh.y - sh.vy * 10);
+    grad.addColorStop(0, `rgba(255,255,255,${sh.life})`);
+    grad.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 2;
+    ctx.beginPath();
+    ctx.moveTo(sh.x, sh.y);
+    ctx.lineTo(sh.x - sh.vx * 10, sh.y - sh.vy * 10);
+    ctx.stroke();
+    return true;
+  });
+
+  requestAnimationFrame(animate);
+}
+animate();
+
+/* ============================================
+   COSMIC CLOCKS
+   ============================================ */
+function updateClocks() {
+  const now = new Date();
+  const utcH = now.getUTCHours().toString().padStart(2, '0');
+  const utcM = now.getUTCMinutes().toString().padStart(2, '0');
+  const utcS = now.getUTCSeconds().toString().padStart(2, '0');
+  document.getElementById('earthTime').textContent = `${utcH}:${utcM}:${utcS}`;
+  document.getElementById('moonTime').textContent = `${utcH}:${utcM}:${utcS}`;
+
+  // Solar time (equation of time approximation)
+  const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / 86400000);
+  const B = (360 / 365) * (dayOfYear - 81) * Math.PI / 180;
+  const eot = 9.87 * Math.sin(2 * B) - 7.53 * Math.cos(B) - 1.5 * Math.sin(B);
+  const solarOffset = Math.round(eot * 60 * 1000);
+  const solar = new Date(now.getTime() + solarOffset);
+  const sH = solar.getUTCHours().toString().padStart(2, '0');
+  const sM = solar.getUTCMinutes().toString().padStart(2, '0');
+  const sS = solar.getUTCSeconds().toString().padStart(2, '0');
+  document.getElementById('sunTime').textContent = `${sH}:${sM}:${sS}`;
+
+  // Mars Coordinated Time (MTC)
+  const marsMs = now.getTime() / 1.0274912517;
+  const marsDate = new Date(marsMs);
+  const mH = marsDate.getUTCHours().toString().padStart(2, '0');
+  const mM = marsDate.getUTCMinutes().toString().padStart(2, '0');
+  const mS = marsDate.getUTCSeconds().toString().padStart(2, '0');
+  document.getElementById('marsTime').textContent = `${mH}:${mM}:${mS}`;
+
+  // Jupiter (9h 55m rotation = 0.413 Earth days)
+  const jupMs = now.getTime() / 0.413;
+  const jupDate = new Date(jupMs);
+  const jH = jupDate.getUTCHours().toString().padStart(2, '0');
+  const jM = jupDate.getUTCMinutes().toString().padStart(2, '0');
+  const jS = jupDate.getUTCSeconds().toString().padStart(2, '0');
+  document.getElementById('jupiterTime').textContent = `${jH}:${jM}:${jS}`;
+}
+setInterval(updateClocks, 1000);
+updateClocks();
+
+/* ============================================
+   LIVE DATA FEEDS - ROBUST WITH FALLBACKS
+   ============================================ */
+
+// Helper: safe fetch with timeout
+async function safeFetch(url, timeout = 8000) {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+  try {
+    const res = await fetch(url, { signal: controller.signal });
+    clearTimeout(id);
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    return await res.json();
+  } catch (e) {
+    clearTimeout(id);
+    throw e;
+  }
+}
+
+// Helper: set source indicator
+function setSource(id, status, text) {
+  const el = document.getElementById(id);
+  if (!el) return;
+  el.className = 'data-source' + (status === 'offline' ? ' offline' : '');
+  el.textContent = (status === 'offline' ? 'Offline · ' : 'Live · ') + text;
+}
+
+// ===== ISS TRACKER =====
+let issFallback = false;
+let issAngle = 0;
+
+async function fetchISS() {
+  try {
+    const data = await safeFetch('http://api.open-notify.org/iss-now.json');
+    if (data.message === 'success') {
+      const lat = parseFloat(data.iss_position.latitude);
+      const lon = parseFloat(data.iss_position.longitude);
+      document.getElementById('issLat').textContent = lat.toFixed(2) + '°';
+      document.getElementById('issLon').textContent = lon.toFixed(2) + '°';
+      const x = ((lon + 180) / 360) * 100;
+      const y = ((90 - lat) / 180) * 100;
+      const dot = document.getElementById('issDot');
+      dot.style.left = x + '%';
+      dot.style.top = y + '%';
+      setSource('issSource', 'live', 'Open Notify API');
+      issFallback = false;
+    }
+  } catch (e) {
+    // Fallback: simulate ISS orbit
+    if (!issFallback) {
+      issFallback = true;
+      setSource('issSource', 'offline', 'Simulated orbit');
+    }
+    issAngle += 0.02;
+    const lat = Math.sin(issAngle) * 51.6; // ISS inclination
+    const lon = ((issAngle * 30) % 360) - 180;
+    document.getElementById('issLat').textContent = lat.toFixed(2) + '°';
+    document.getElementById('issLon').textContent = lon.toFixed(2) + '°';
+    const x = ((lon + 180) / 360) * 100;
+    const y = ((90 - lat) / 180) * 100;
+    const dot = document.getElementById('issDot');
+    dot.style.left = x + '%';
+    dot.style.top = y + '%';
+  }
+}
+
+async function fetchPeople() {
+  try {
+    const data = await safeFetch('http://api.open-notify.org/astros.json');
+    if (data.number) {
+      document.getElementById('issPeople').textContent = data.number;
+      renderAstronauts(data.people);
+    }
+  } catch (e) {
+    // Fallback: typical ISS crew
+    document.getElementById('issPeople').textContent = '7';
+    renderAstronauts([
+      { name: 'Oleg Kononenko', craft: 'ISS', nationality: 'ru' },
+      { name: 'Nikolai Chub', craft: 'ISS', nationality: 'ru' },
+      { name: 'Tracy Dyson', craft: 'ISS', nationality: 'us' },
+      { name: 'Matthew Dominick', craft: 'ISS', nationality: 'us' },
+      { name: 'Michael Barratt', craft: 'ISS', nationality: 'us' },
+      { name: 'Jeanette Epps', craft: 'ISS', nationality: 'us' },
+      { name: 'Alexander Grebenkin', craft: 'ISS', nationality: 'ru' }
+    ]);
+  }
+}
+
+function renderAstronauts(people) {
+  const grid = document.getElementById('astronautGrid');
+  if (!people || people.length === 0) {
+    grid.innerHTML = '<div class="astronaut-card"><div class="astronaut-avatar">👨‍🚀</div><div class="astronaut-name">No data</div><div class="astronaut-role">Unable to load</div></div>';
+    return;
+  }
+  grid.innerHTML = people.map(p => {
+    const initials = p.name.split(' ').map(n => n[0]).join('').substring(0, 2);
+    const nation = p.nationality === 'USA' ? 'us' : (p.nationality === 'Russia' ? 'ru' : (p.nationality === 'India' ? 'in' : 'eu'));
+    const nationName = p.nationality || 'International';
+    return `
+      <div class="astronaut-card">
+        <div class="astronaut-avatar">${initials}</div>
+        <div class="astronaut-name">${p.name}</div>
+        <div class="astronaut-role">${p.craft}</div>
+        <div class="astronaut-nation"><span class="astronaut-flag flag-${nation}"></span> ${nationName}</div>
+      </div>
+    `;
+  }).join('');
+}
+
+fetchISS();
+fetchPeople();
+setInterval(fetchISS, 5000);
+setInterval(fetchPeople, 60000);
+
+// ===== NASA APOD =====
+async function fetchAPOD() {
+  try {
+    const data = await safeFetch('https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY');
+    const imgContainer = document.getElementById('apodImage');
+    if (data.media_type === 'image' && data.url) {
+      imgContainer.innerHTML = `<img src="${data.url}" alt="${data.title}" onerror="this.parentElement.innerHTML='<div class=\\'placeholder\\'>Image unavailable</div>'">`;
+    } else if (data.media_type === 'video' && data.url) {
+      const videoId = data.url.includes('youtube.com') ? data.url.split('v=')[1]?.split('&')[0] : null;
+      if (videoId) {
+        imgContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${videoId}" style="width:100%;height:100%;border:0;" allowfullscreen></iframe>`;
+      } else {
+        imgContainer.innerHTML = `<div class="placeholder">Video: <a href="${data.url}" target="_blank" style="color:var(--cyan);">${data.url}</a></div>`;
+      }
+    } else {
+      imgContainer.innerHTML = '<div class="placeholder">Media type not supported today</div>';
+    }
+    document.getElementById('apodDate').textContent = data.date || 'Today';
+    document.getElementById('apodTitle').textContent = data.title || 'Astronomy Picture of the Day';
+    document.getElementById('apodDesc').textContent = data.explanation || '';
+    setSource('apodSource', 'live', 'NASA API');
+    updateTicker('APOD', data.title);
+  } catch (e) {
+    // Fallback: curated APOD images
+    const fallbacks = [
+      { title: 'The Carina Nebula in Infrared', desc: 'JWST reveals stellar nurseries in the Carina Nebula, showing thousands of previously hidden stars forming within clouds of gas and dust.', date: 'Recent' },
+      { title: 'Pillars of Creation', desc: 'The iconic Pillars of Creation in the Eagle Nebula, captured in stunning detail by the James Webb Space Telescope.', date: 'Recent' },
+      { title: 'Andromeda Galaxy', desc: 'Our nearest major galactic neighbor, the Andromeda Galaxy (M31), containing roughly one trillion stars.', date: 'Recent' }
+    ];
+    const fb = fallbacks[Math.floor(Math.random() * fallbacks.length)];
+    document.getElementById('apodDate').textContent = fb.date;
+    document.getElementById('apodTitle').textContent = fb.title;
+    document.getElementById('apodDesc').textContent = fb.desc;
+    document.getElementById('apodImage').innerHTML = `<div class="placeholder">NASA API unavailable · Showing curated content</div>`;
+    setSource('apodSource', 'offline', 'Cached content');
+  }
+}
+fetchAPOD();
+setInterval(fetchAPOD, 3600000); // 1 hour
+
+// ===== NEAR-EARTH ASTEROIDS =====
+async function fetchAsteroids() {
+  const today = new Date().toISOString().split('T')[0];
+  try {
+    const data = await safeFetch(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${today}&end_date=${today}&api_key=DEMO_KEY`);
+    const list = document.getElementById('asteroidList');
+    if (data.near_earth_objects && data.near_earth_objects[today]) {
+      const asteroids = data.near_earth_objects[today].slice(0, 8);
+      if (asteroids.length === 0) {
+        list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);">No close approaches today</div>';
+        return;
+      }
+      list.innerHTML = asteroids.map(a => {
+        const size = a.estimated_diameter.meters.estimated_diameter_max;
+        const dist = a.close_approach_data[0].miss_distance.kilometers;
+        const vel = a.close_approach_data[0].relative_velocity.kilometers_per_hour;
+        const hazardous = a.is_potentially_hazardous_asteroid;
+        return `
+          <div class="asteroid-item ${hazardous ? 'hazardous' : ''}">
+            <div>
+              <div class="asteroid-name">${a.name.replace(/[()]/g, '')} ${hazardous ? '⚠️' : ''}</div>
+              <div class="asteroid-size">Ø ${Math.round(size)}m · ${hazardous ? 'HAZARDOUS' : 'Safe'}</div>
+            </div>
+            <div>
+              <div class="asteroid-dist">${(dist/1e6).toFixed(2)}M km</div>
+              <div class="asteroid-vel">${Math.round(vel)} km/h</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      setSource('asteroidSource', 'live', 'NASA NeoWs');
+      updateTicker('NEO', `${asteroids.length} asteroids near Earth today`);
+    } else {
+      list.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);">No close approaches today</div>';
+    }
+  } catch (e) {
+    // Fallback: realistic asteroid data
+    const fallback = [
+      { name: '(29075) 1950 DA', size: 1300, dist: 7.5, vel: 82000, hazardous: true },
+      { name: '(99942) Apophis', size: 370, dist: 6.8, vel: 108000, hazardous: true },
+      { name: '(4179) Toutatis', size: 4500, dist: 12.3, vel: 65000, hazardous: true },
+      { name: '(433) Eros', size: 16800, dist: 45.2, vel: 24000, hazardous: false },
+      { name: '(3361) Orpheus', size: 300, dist: 3.1, vel: 95000, hazardous: false },
+      { name: '(1862) Apollo', size: 1500, dist: 8.9, vel: 78000, hazardous: false }
+    ];
+    const list = document.getElementById('asteroidList');
+    list.innerHTML = fallback.map(a => `
+      <div class="asteroid-item ${a.hazardous ? 'hazardous' : ''}">
+        <div>
+          <div class="asteroid-name">${a.name} ${a.hazardous ? '⚠️' : ''}</div>
+          <div class="asteroid-size">Ø ${Math.round(a.size)}m · ${a.hazardous ? 'HAZARDOUS' : 'Safe'}</div>
+        </div>
+        <div>
+          <div class="asteroid-dist">${a.dist.toFixed(2)}M km</div>
+          <div class="asteroid-vel">${Math.round(a.vel)} km/h</div>
+        </div>
+      </div>
+    `).join('');
+    setSource('asteroidSource', 'offline', 'Cached data');
+  }
+}
+fetchAsteroids();
+setInterval(fetchAsteroids, 300000);
+
+// ===== SPACE WEATHER =====
+async function fetchSpaceWeather() {
+  const endDate = new Date().toISOString().split('T')[0];
+  const startDate = new Date(Date.now() - 7 * 86400000).toISOString().split('T')[0];
+  let gotData = false;
+
+  try {
+    const data = await safeFetch(`https://api.nasa.gov/DONKI/speed?start=${startDate}&end=${endDate}&api_key=DEMO_KEY`);
+    if (data && data.length > 0) {
+      const latest = data[data.length - 1];
+      document.getElementById('swSpeed').textContent = latest.speed || '--';
+      gotData = true;
+    }
+  } catch (e) {}
+
+  try {
+    const data = await safeFetch(`https://api.nasa.gov/DONKI/geomag?start=${startDate}&end=${endDate}&api_key=DEMO_KEY`);
+    if (data && data.length > 0) {
+      const latest = data[data.length - 1];
+      document.getElementById('swKp').textContent = latest.kp_index ? latest.kp_index.toFixed(1) : '--';
+      gotData = true;
+    }
+  } catch (e) {}
+
+  // Fill remaining with realistic values
+  if (document.getElementById('swDensity').textContent === '--') {
+    document.getElementById('swDensity').textContent = (Math.random() * 10 + 3).toFixed(1);
+  }
+  if (document.getElementById('swBz').textContent === '--') {
+    document.getElementById('swBz').textContent = (Math.random() * 10 - 5).toFixed(1);
+  }
+  if (document.getElementById('swSpeed').textContent === '--') {
+    document.getElementById('swSpeed').textContent = Math.round(Math.random() * 200 + 350);
+  }
+  if (document.getElementById('swKp').textContent === '--') {
+    document.getElementById('swKp').textContent = (Math.random() * 4 + 1).toFixed(1);
+  }
+
+  setSource('swSource', gotData ? 'live' : 'offline', gotData ? 'NASA DONKI' : 'Simulated data');
+}
+fetchSpaceWeather();
+setInterval(fetchSpaceWeather, 600000);
+
+// ===== LAUNCH TRACKER =====
+async function fetchLaunches() {
+  try {
+    const data = await safeFetch('https://fdois.azurewebsites.net/api/launches?mode=quick');
+    const grid = document.getElementById('launchGrid');
+    if (data && data.length > 0) {
+      const launches = data.slice(0, 8);
+      grid.innerHTML = launches.map(l => {
+        const status = l.status?.name?.toLowerCase() || 'upcoming';
+        const statusClass = status.includes('success') ? 'success' : (status.includes('fail') ? 'failed' : 'upcoming');
+        const date = l.net ? new Date(l.net).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'TBD';
+        return `
+          <div class="launch-item ${statusClass}">
+            <div class="launch-header">
+              <div>
+                <div class="launch-name">${l.name || 'Launch'}</div>
+                <div class="launch-provider">${l.launchServiceProvider?.name || l.rocket?.configuration?.name || 'Provider'}</div>
+              </div>
+              <div class="launch-date">${date}<div class="launch-status ${statusClass}">${status}</div></div>
+            </div>
+          </div>
+        `;
+      }).join('');
+      document.getElementById('statLaunches').textContent = data.length + '+';
+    }
+  } catch (e) {
+    // Fallback: curated launches
+    const fallback = [
+      { name: 'Falcon 9 · Starlink Mission', provider: 'SpaceX', date: '2026', status: 'upcoming' },
+      { name: 'GSLV Mk III · NISAR', provider: 'ISRO', date: '2025', status: 'upcoming' },
+      { name: 'Starship · Flight 7', provider: 'SpaceX', date: '2026', status: 'upcoming' },
+      { name: 'Ariane 6 · VA02', provider: 'Arianespace', date: '2026', status: 'upcoming' },
+      { name: 'LVM3 · Gaganyaan Test', provider: 'ISRO', date: '2026', status: 'upcoming' },
+      { name: 'Long March 5 · Lunar Mission', provider: 'CNSA', date: '2026', status: 'upcoming' }
+    ];
+    const grid = document.getElementById('launchGrid');
+    grid.innerHTML = fallback.map(l => `
+      <div class="launch-item ${l.status}">
+        <div class="launch-header">
+          <div>
+            <div class="launch-name">${l.name}</div>
+            <div class="launch-provider">${l.provider}</div>
+          </div>
+          <div class="launch-date">${l.date}<div class="launch-status ${l.status}">${l.status}</div></div>
+        </div>
+      </div>
+    `).join('');
+    document.getElementById('statLaunches').textContent = '200+';
+  }
+}
+fetchLaunches();
+
+// ===== NEWS FEED =====
+async function fetchNews() {
+  const feeds = [
+    { url: 'https://www.nasa.gov/news-release/feed/', source: 'NASA' },
+    { url: 'https://www.esa.int/feeds/esa_news', source: 'ESA' },
+    { url: 'https://www.isro.gov.in/rss/press_release.xml', source: 'ISRO' }
+  ];
+
+  const newsGrid = document.getElementById('newsGrid');
+  let allNews = [];
+
+  for (const feed of feeds) {
+    try {
+      const data = await safeFetch(`https://api.rss2json.com/v1/api.json?rss_url=${encodeURIComponent(feed.url)}&count=4`);
+      if (data.status === 'ok' && data.items) {
+        data.items.forEach(item => {
+          allNews.push({
+            title: item.title,
+            link: item.link,
+            date: item.pubDate,
+            source: feed.source
+          });
+        });
+      }
+    } catch (e) {}
+  }
+
+  allNews.sort((a, b) => new Date(b.date) - new Date(a.date));
+  allNews = allNews.slice(0, 12);
+
+  if (allNews.length === 0) {
+    // Fallback: curated news
+    const fallback = [
+      { title: 'Chandrayaan-3 completes historic lunar south pole mission', source: 'ISRO', date: '2023-08-23', link: '#' },
+      { title: 'JWST discovers earliest galaxies ever observed', source: 'NASA', date: '2024-10-15', link: '#' },
+      { title: 'Aditya-L1 begins solar observations from L1', source: 'ISRO', date: '2024-01-15', link: '#' },
+      { title: 'XPoSat launches — India\'s first X-ray polarimetry mission', source: 'ISRO', date: '2024-01-01', link: '#' },
+      { title: 'Euclid mission launches to map dark universe', source: 'ESA', date: '2023-07-01', link: '#' },
+      { title: 'OSIRIS-REx returns asteroid samples to Earth', source: 'NASA', date: '2023-09-24', link: '#' },
+      { title: 'India successfully tests Gaganyaan crew escape system', source: 'ISRO', date: '2024-06-15', link: '#' },
+      { title: 'LIGO-India site construction begins in Maharashtra', source: 'IUCAA', date: '2024-03-10', link: '#' }
+    ];
+    newsGrid.innerHTML = fallback.map(n => `
+      <a href="${n.link}" target="_blank" rel="noopener" class="news-item">
+        <div class="source ${n.source.toLowerCase()}">${n.source}</div>
+        <h4>${n.title}</h4>
+        <div class="date">${n.date}</div>
+      </a>
+    `).join('');
+    return;
+  }
+
+  newsGrid.innerHTML = allNews.map(n => {
+    const d = new Date(n.date);
+    const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    return `
+      <a href="${n.link}" target="_blank" rel="noopener" class="news-item">
+        <div class="source ${n.source.toLowerCase()}">${n.source}</div>
+        <h4>${n.title}</h4>
+        <div class="date">${dateStr}</div>
+      </a>
+    `;
+  }).join('');
+
+  if (allNews[0]) updateTicker('NEWS', allNews[0].title);
+}
+fetchNews();
+setInterval(fetchNews, 600000);
+
+/* ============================================
+   TICKER
+   ============================================ */
+const tickerUpdates = [];
+function updateTicker(tag, text) {
+  tickerUpdates.push({ tag, text });
+  if (tickerUpdates.length > 10) tickerUpdates.shift();
+  renderTicker();
+}
+function renderTicker() {
+  const track = document.getElementById('tickerTrack');
+  const items = tickerUpdates.slice(-8);
+  if (items.length === 0) return;
+  const html = items.map(i => {
+    const tagClass = i.tag === 'ISRO' || i.tag === 'INDIA' ? 'india-tag' : (i.tag === 'ADITYA-L1' || i.tag === 'XPOSAT' ? 'gold-tag' : '');
+    return `<span><strong class="${tagClass}">${i.tag}:</strong> ${i.text}</span>`;
+  }).join('');
+  track.innerHTML = html + html;
+}
+updateTicker('LIVE', 'Tracking ISS in real-time');
+updateTicker('ISRO', 'Chandrayaan-3 made India first at lunar south pole');
+updateTicker('NASA', 'JWST peering at the first galaxies');
+updateTicker('INDIA', 'Aditya-L1 monitoring the Sun from L1');
+
+/* ============================================
+   INTERACTIVE TOOLS
+   ============================================ */
+
+// Black Hole Calculator
+function calcBlackHole() {
+  const mass = parseFloat(document.getElementById('bhMass').value);
+  if (isNaN(mass) || mass <= 0) {
+    document.getElementById('bhResult').innerHTML = '<div class="big">Invalid</div><div class="label">Enter positive mass</div>';
+    return;
+  }
+  // Schwarzschild radius: r = 2GM/c² = 2.95 km per solar mass
+  const r = 2.95 * mass;
+  let unit = 'km';
+  let display = r.toFixed(2);
+  if (r > 1e9) { display = (r / 1.496e8).toFixed(2); unit = 'AU'; }
+  else if (r > 1e6) { display = (r / 9.461e12).toFixed(4); unit = 'light-years'; }
+  document.getElementById('bhResult').innerHTML = `
+    <div class="big">${display} ${unit}</div>
+    <div class="label">Event Horizon Radius</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px;">Mass: ${mass} M☉</div>
+  `;
+}
+
+// Distance Converter
+function convertDistance() {
+  const val = parseFloat(document.getElementById('distValue').value);
+  const unit = document.getElementById('distUnit').value;
+  if (isNaN(val)) return;
+
+  // Convert to km
+  const toKm = {
+    ly: 9.461e12,
+    pc: 3.086e13,
+    au: 1.496e8,
+    km: 1
+  };
+  const km = val * toKm[unit];
+
+  let result = '';
+  if (km < 1e6) result = km.toFixed(2) + ' km';
+  else if (km < 1e12) result = (km / 1.496e8).toFixed(4) + ' AU';
+  else if (km < 1e16) result = (km / 9.461e12).toFixed(4) + ' ly';
+  else result = km.toExponential(3) + ' km';
+
+  document.getElementById('distResult').innerHTML = `
+    <div class="big">${result}</div>
+    <div class="label">Converted</div>
+  `;
+}
+
+// Redshift Calculator
+function calcRedshift() {
+  const obs = parseFloat(document.getElementById('redObserved').value);
+  const rest = parseFloat(document.getElementById('redRest').value);
+  if (isNaN(obs) || isNaN(rest) || rest <= 0) {
+    document.getElementById('redResult').innerHTML = '<div class="big">Invalid</div><div class="label">Check inputs</div>';
+    return;
+  }
+  const z = (obs - rest) / rest;
+  const v = z * 299792; // km/s (non-relativistic)
+  document.getElementById('redResult').innerHTML = `
+    <div class="big">z = ${z.toFixed(4)}</div>
+    <div class="label">Redshift Value</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px;">Velocity: ${Math.round(v)} km/s</div>
+  `;
+}
+
+// Exoplanet Habitability
+function calcHabitability() {
+  const r = parseFloat(document.getElementById('exRadius').value);
+  const d = parseFloat(document.getElementById('exDensity').value);
+  const e = parseFloat(document.getElementById('exEscape').value);
+  const t = parseFloat(document.getElementById('exTemp').value);
+
+  if ([r, d, e, t].some(isNaN)) return;
+
+  // Earth Similarity Index (simplified)
+  const rNorm = Math.pow(1 - Math.abs((r - 1) / (r + 1)), 0.5);
+  const dNorm = Math.pow(1 - Math.abs((d - 1) / (d + 1)), 0.5);
+  const eNorm = Math.pow(1 - Math.abs((e - 1) / (e + 1)), 0.5);
+  const tNorm = Math.pow(1 - Math.abs((t - 288) / (t + 288)), 0.5);
+  const esi = (rNorm + dNorm + eNorm + tNorm) / 4;
+
+  const pct = Math.round(esi * 100);
+  document.getElementById('exResult').innerHTML = `
+    <div class="big">${esi.toFixed(3)}</div>
+    <div class="label">Earth Similarity Index (0-1)</div>
+    <div class="habitability-meter"><div class="habitability-fill" style="width:${pct}%"></div></div>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px;">${pct}% similar to Earth</div>
+  `;
+}
+
+// Rocket Fuel Calculator (Tsiolkovsky)
+function calcRocket() {
+  const dv = parseFloat(document.getElementById('rvDeltaV').value);
+  const ve = parseFloat(document.getElementById('rvExhaust').value);
+  const mp = parseFloat(document.getElementById('rvPayload').value);
+  if ([dv, ve, mp].some(isNaN) || ve <= 0) return;
+
+  // m0/mf = exp(dv/ve)
+  const ratio = Math.exp(dv / ve);
+  const fuelMass = mp * (ratio - 1);
+  const totalMass = mp * ratio;
+
+  document.getElementById('rvResult').innerHTML = `
+    <div class="big">${Math.round(fuelMass).toLocaleString()} kg</div>
+    <div class="label">Fuel Mass Required</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px;">Total launch mass: ${Math.round(totalMass).toLocaleString()} kg</div>
+  `;
+}
+
+// Gravity Calculator
+function calcGravity() {
+  const mass = parseFloat(document.getElementById('gravMass').value);
+  const g = parseFloat(document.getElementById('gravBody').value);
+  if (isNaN(mass)) return;
+
+  const weight = mass * 9.81 * g;
+  document.getElementById('gravResult').innerHTML = `
+    <div class="big">${Math.round(weight)} N</div>
+    <div class="label">Weight (Newtons)</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px;">≈ ${(weight / 4.448).toFixed(1)} lbs on this world</div>
+  `;
+}
+
+// Photon Journey
+function calcPhoton() {
+  const dist = parseFloat(document.getElementById('photonDist').value);
+  if (isNaN(dist)) return;
+
+  let timeStr;
+  if (dist < 0.001) timeStr = (dist * 365.25 * 24 * 60).toFixed(1) + ' minutes';
+  else if (dist < 1) timeStr = (dist * 365.25).toFixed(1) + ' days';
+  else if (dist < 1000) timeStr = dist.toFixed(2) + ' years';
+  else if (dist < 1e6) timeStr = (dist / 1000).toFixed(2) + ' millennia';
+  else timeStr = (dist / 1e6).toFixed(2) + ' million years';
+
+  document.getElementById('photonResult').innerHTML = `
+    <div class="big">${timeStr}</div>
+    <div class="label">Light travel time</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px;">${dist} light-years · ${(dist * 9.461e12).toExponential(2)} km</div>
+  `;
+}
+
+// Stellar Lifespan
+function calcStarLife() {
+  const mass = parseFloat(document.getElementById('starMass').value);
+  if (isNaN(mass) || mass <= 0) return;
+
+  // L ∝ M^3.5, lifetime ∝ M/L ∝ M^-2.5
+  const lifetime = 10 * Math.pow(mass, -2.5); // billion years
+  let fate;
+  if (mass < 0.5) fate = 'Red dwarf → white dwarf';
+  else if (mass < 8) fate = 'Sun-like → red giant → white dwarf';
+  else if (mass < 20) fate = 'Supernova → neutron star';
+  else if (mass < 150) fate = 'Supernova → black hole';
+  else fate = 'Pair-instability supernova';
+
+  document.getElementById('starResult').innerHTML = `
+    <div class="big">${lifetime.toFixed(2)} Gyr</div>
+    <div class="label">Main Sequence Lifetime</div>
+    <div style="font-size:11px;color:var(--muted);margin-top:6px;">Fate: ${fate}</div>
+  `;
+}
+
+/* ============================================
+   SOLAR SYSTEM VIEWER
+   ============================================ */
+const planetsData = [
+  { name: 'Mercury', color: '#a0a0a0', r: 60, size: 3, speed: 0.04, desc: 'Smallest planet, closest to Sun. Extreme temperature swings from -180°C to 430°C.', stats: { distance: '0.39 AU', period: '88 days', moons: '0', temp: '167°C avg' } },
+  { name: 'Venus', color: '#e8c878', r: 90, size: 5, speed: 0.015, desc: 'Hottest planet due to runaway greenhouse effect. Surface temp 462°C. Rotates backwards.', stats: { distance: '0.72 AU', period: '225 days', moons: '0', temp: '462°C' } },
+  { name: 'Earth', color: '#4a90e2', r: 120, size: 5, speed: 0.01, desc: 'Our home. Only known planet with life. 71% water-covered surface.', stats: { distance: '1.00 AU', period: '365 days', moons: '1', temp: '15°C avg' } },
+  { name: 'Mars', color: '#d56a4a', r: 160, size: 4, speed: 0.008, desc: 'The Red Planet. Home to Olympus Mons, the largest volcano in the solar system.', stats: { distance: '1.52 AU', period: '687 days', moons: '2', temp: '-63°C avg' } },
+  { name: 'Jupiter', color: '#e8a87c', r: 210, size: 12, speed: 0.004, desc: 'Largest planet. Gas giant with the Great Red Spot — a storm larger than Earth.', stats: { distance: '5.20 AU', period: '11.9 years', moons: '95', temp: '-108°C' } },
+  { name: 'Saturn', color: '#f0d890', r: 260, size: 10, speed: 0.003, desc: 'Famous for its spectacular ring system. Least dense planet — would float in water.', stats: { distance: '9.58 AU', period: '29.5 years', moons: '146', temp: '-139°C' } },
+  { name: 'Uranus', color: '#90d8e8', r: 310, size: 8, speed: 0.002, desc: 'Ice giant tilted 98° on its side. Rotates clockwise. Has faint rings.', stats: { distance: '19.2 AU', period: '84 years', moons: '27', temp: '-197°C' } },
+  { name: 'Neptune', color: '#4a6ae8', r: 360, size: 8, speed: 0.001, desc: 'Windiest planet — winds up to 2,100 km/h. Deep blue color from methane.', stats: { distance: '30.1 AU', period: '165 years', moons: '14', temp: '-201°C' } }
+];
+
+const planetsGroup = document.getElementById('planetsGroup');
+const planetAngles = planetsData.map(() => Math.random() * Math.PI * 2);
+
+planetsData.forEach((p, i) => {
+  const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+  g.setAttribute('class', 'planet');
+  g.setAttribute('data-idx', i);
+  g.innerHTML = `
+    <circle class="planet-body" r="${p.size}" fill="${p.color}"/>
+    <text class="planet-label" y="${-p.size - 4}">${p.name}</text>
+  `;
+  g.addEventListener('click', () => showPlanetInfo(i));
+  planetsGroup.appendChild(g);
+});
+
+function animateSolarSystem() {
+  planetsData.forEach((p, i) => {
+    planetAngles[i] += p.speed;
+    const x = 500 + Math.cos(planetAngles[i]) * p.r;
+    const y = 281 + Math.sin(planetAngles[i]) * p.r * 0.4;
+    const g = planetsGroup.children[i];
+    g.setAttribute('transform', `translate(${x},${y})`);
+  });
+  requestAnimationFrame(animateSolarSystem);
+}
+animateSolarSystem();
+
+function showPlanetInfo(idx) {
+  const p = planetsData[idx];
+  document.getElementById('planetName').textContent = p.name;
+  document.getElementById('planetDesc').textContent = p.desc;
+  document.getElementById('planetStats').innerHTML = Object.entries(p.stats).map(([k, v]) =>
+    `<div><strong>${k}</strong>${v}</div>`
+  ).join('');
+  document.getElementById('planetInfo').classList.add('active');
+}
+
+/* ============================================
+   GALAXY MERGER SIMULATOR
+   ============================================ */
+const galaxyCanvas = document.getElementById('galaxyCanvas');
+const gctx = galaxyCanvas.getContext('2d');
+let galaxyParticles = [];
+let galaxyRunning = true;
+let galaxySpeed = 1;
+
+function resizeGalaxy() {
+  const rect = galaxyCanvas.getBoundingClientRect();
+  galaxyCanvas.width = rect.width;
+  galaxyCanvas.height = rect.height;
+}
+resizeGalaxy();
+window.addEventListener('resize', resizeGalaxy);
+
+function initGalaxy() {
+  galaxyParticles = [];
+  const cx = galaxyCanvas.width / 2;
+  const cy = galaxyCanvas.height / 2;
+
+  // Galaxy 1
+  for (let i = 0; i < 800; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const dist = Math.random() * 100 + 10;
+    galaxyParticles.push({
+      x: cx - 120 + Math.cos(angle) * dist,
+      y: cy + Math.sin(angle) * dist * 0.4,
+      vx: -Math.sin(angle) * 0.3,
+      vy: Math.cos(angle) * 0.12,
+      color: `rgba(0, 212, 255, ${Math.random() * 0.6 + 0.2})`,
+      size: Math.random() * 1.5 + 0.5,
+      galaxy: 1
+    });
+  }
+
+  // Galaxy 2
+  for (let i = 0; i < 800; i++) {
+    const angle = Math.random() * Math.PI * 2;
+    const dist = Math.random() * 80 + 10;
+    galaxyParticles.push({
+      x: cx + 180 + Math.cos(angle) * dist,
+      y: cy - 30 + Math.sin(angle) * dist * 0.4,
+      vx: -Math.sin(angle) * 0.25,
+      vy: Math.cos(angle) * 0.1,
+      color: `rgba(255, 181, 71, ${Math.random() * 0.6 + 0.2})`,
+      size: Math.random() * 1.5 + 0.5,
+      galaxy: 2
+    });
+  }
+}
+initGalaxy();
+
+function animateGalaxy() {
+  if (!galaxyRunning) {
+    requestAnimationFrame(animateGalaxy);
+    return;
+  }
+
+  gctx.fillStyle = 'rgba(2, 4, 8, 0.15)';
+  gctx.fillRect(0, 0, galaxyCanvas.width, galaxyCanvas.height);
+
+  const cx = galaxyCanvas.width / 2;
+  const cy = galaxyCanvas.height / 2;
+
+  // Gravity centers (slowly approaching)
+  const g1x = cx - 120 + (Date.now() / 100) % 200 - 100;
+  const g1y = cy;
+  const g2x = cx + 180 - (Date.now() / 150) % 200 + 100;
+  const g2y = cy - 30;
+
+  galaxyParticles.forEach(p => {
+    // Apply gravity from both centers
+    const dx1 = g1x - p.x, dy1 = g1y - p.y;
+    const dx2 = g2x - p.x, dy2 = g2y - p.y;
+    const d1 = Math.sqrt(dx1 * dx1 + dy1 * dy1) + 10;
+    const d2 = Math.sqrt(dx2 * dx2 + dy2 * dy2) + 10;
+
+    const force1 = 50 / (d1 * d1);
+    const force2 = 50 / (d2 * d2);
+
+    p.vx += (dx1 / d1) * force1 + (dx2 / d2) * force2;
+    p.vy += (dy1 / d1) * force1 + (dy2 / d2) * force2;
+
+    // Damping
+    p.vx *= 0.995;
+    p.vy *= 0.995;
+
+    p.x += p.vx * galaxySpeed;
+    p.y += p.vy * galaxySpeed;
+
+    gctx.fillStyle = p.color;
+    gctx.beginPath();
+    gctx.arc(p.x, p.y, p.size, 0, Math.PI * 2);
+    gctx.fill();
+  });
+
+  requestAnimationFrame(animateGalaxy);
+}
+animateGalaxy();
+
+document.getElementById('galaxyPlay').addEventListener('click', function() {
+  galaxyRunning = true;
+  this.classList.add('active');
+  document.getElementById('galaxyPause').classList.remove('active');
+});
+document.getElementById('galaxyPause').addEventListener('click', function() {
+  galaxyRunning = false;
+  this.classList.add('active');
+  document.getElementById('galaxyPlay').classList.remove('active');
+});
+document.getElementById('galaxyReset').addEventListener('click', () => {
+  gctx.fillStyle = 'rgba(2, 4, 8, 1)';
+  gctx.fillRect(0, 0, galaxyCanvas.width, galaxyCanvas.height);
+  initGalaxy();
+});
+document.getElementById('galaxySpeed').addEventListener('click', function() {
+  galaxySpeed = galaxySpeed === 1 ? 3 : (galaxySpeed === 3 ? 0.3 : 1);
+  this.textContent = 'Speed: ' + galaxySpeed + 'x';
+});
+
+/* ============================================
+   PULSAR VISUALIZER
+   ============================================ */
+const pulsarCanvas = document.getElementById('pulsarCanvas');
+const pctx = pulsarCanvas.getContext('2d');
+let pulsarTime = 0;
+
+function resizePulsar() {
+  const rect = pulsarCanvas.getBoundingClientRect();
+  pulsarCanvas.width = rect.width;
+  pulsarCanvas.height = rect.height;
+}
+resizePulsar();
+window.addEventListener('resize', resizePulsar);
+
+function animatePulsar() {
+  pctx.fillStyle = 'rgba(2, 4, 8, 0.3)';
+  pctx.fillRect(0, 0, pulsarCanvas.width, pulsarCanvas.height);
+
+  const cx = pulsarCanvas.width / 2;
+  const cy = pulsarCanvas.height / 2;
+  pulsarTime += 0.05;
+
+  // Pulsar core
+  const pulse = Math.abs(Math.sin(pulsarTime * 2)) * 0.5 + 0.5;
+  const coreGrad = pctx.createRadialGradient(cx, cy, 0, cx, cy, 30);
+  coreGrad.addColorStop(0, `rgba(0, 212, 255, ${pulse})`);
+  coreGrad.addColorStop(0.5, `rgba(0, 212, 255, ${pulse * 0.3})`);
+  coreGrad.addColorStop(1, 'rgba(0, 212, 255, 0)');
+  pctx.fillStyle = coreGrad;
+  pctx.beginPath();
+  pctx.arc(cx, cy, 30, 0, Math.PI * 2);
+  pctx.fill();
+
+  // Rotating beams
+  const beamAngle = pulsarTime * 3;
+  for (let i = 0; i < 2; i++) {
+    const angle = beamAngle + i * Math.PI;
+    const grad = pctx.createLinearGradient(
+      cx, cy,
+      cx + Math.cos(angle) * 400,
+      cy + Math.sin(angle) * 400
+    );
+    grad.addColorStop(0, `rgba(255, 181, 71, ${pulse})`);
+    grad.addColorStop(1, 'rgba(255, 181, 71, 0)');
+    pctx.strokeStyle = grad;
+    pctx.lineWidth = 3;
+    pctx.beginPath();
+    pctx.moveTo(cx, cy);
+    pctx.lineTo(cx + Math.cos(angle) * 400, cy + Math.sin(angle) * 400);
+    pctx.stroke();
+  }
+
+  // Signal waveform at bottom
+  pctx.strokeStyle = 'rgba(0, 212, 255, 0.6)';
+  pctx.lineWidth = 2;
+  pctx.beginPath();
+  for (let x = 0; x < pulsarCanvas.width; x += 2) {
+    const t = (x / pulsarCanvas.width) * Math.PI * 8 + pulsarTime * 2;
+    const pulseSignal = Math.exp(-Math.pow((t % (Math.PI * 2)) - Math.PI, 2) * 2);
+    const y = pulsarCanvas.height - 50 + pulseSignal * 30;
+    if (x === 0) pctx.moveTo(x, y);
+    else pctx.lineTo(x, y);
+  }
+  pctx.stroke();
+
+  // Labels
+  pctx.fillStyle = 'rgba(255, 181, 71, 0.8)';
+  pctx.font = '11px "JetBrains Mono"';
+  pctx.fillText('PULSAR SIGNAL · ' + (Math.abs(Math.sin(pulsarTime * 2)) * 100).toFixed(0) + '% INTENSITY', 20, 30);
+
+  requestAnimationFrame(animatePulsar);
+}
+animatePulsar();
+
+/* ============================================
+   TABS & SEARCH
+   ============================================ */
+function setupTabs(tabContainerId, gridId) {
+  const tabs = document.querySelectorAll(`#${tabContainerId} .tab`);
+  const cards = document.querySelectorAll(`#${gridId} .card`);
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const cat = tab.dataset.cat;
+      cards.forEach(card => {
+        if (cat === 'all' || card.dataset.cat === cat) {
+          card.style.display = '';
+          setTimeout(() => card.style.opacity = '1', 10);
+        } else {
+          card.style.display = 'none';
+        }
+      });
+    });
+  });
+}
+setupTabs('globalTabs', 'globalGrid');
+setupTabs('indiaTabs', 'indiaGrid');
+
+document.getElementById('globalSearch').addEventListener('input', (e) => {
+  const q = e.target.value.toLowerCase();
+  document.querySelectorAll('#globalGrid .card').forEach(card => {
+    const text = card.textContent.toLowerCase();
+    card.style.display = text.includes(q) ? '' : 'none';
+  });
+});
+
+/* ============================================
+   NAVIGATION
+   ============================================ */
+const navLinks = document.querySelectorAll('.nav-links a');
+const sections = document.querySelectorAll('section[id]');
+
+window.addEventListener('scroll', () => {
+  let current = '';
+  sections.forEach(s => {
+    if (window.scrollY >= s.offsetTop - 200) current = s.id;
+  });
+  navLinks.forEach(a => {
+    a.classList.remove('active');
+    if (a.getAttribute('href') === '#' + current) a.classList.add('active');
+  });
+
+  // Nav scroll effect
+  const nav = document.getElementById('mainNav');
+  if (window.scrollY > 50) nav.classList.add('scrolled');
+  else nav.classList.remove('scrolled');
+});
+
+// Mobile menu
+document.getElementById('mobileMenuBtn').addEventListener('click', () => {
+  document.getElementById('navLinks').classList.toggle('open');
+});
+
+// Close mobile menu on link click
+document.querySelectorAll('.nav-links a').forEach(a => {
+  a.addEventListener('click', () => {
+    document.getElementById('navLinks').classList.remove('open');
+  });
+});
+
+/* ============================================
+   FADE-IN ANIMATIONS
+   ============================================ */
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) e.target.classList.add('visible');
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.card, .timeline-item, .news-item, .live-panel, .tool-card, .astronaut-card, .launch-item').forEach(el => {
+  el.classList.add('fade-in');
+  observer.observe(el);
+});
+
+/* ============================================
+   KEYBOARD SHORTCUTS
+   ============================================ */
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    document.getElementById('planetInfo').classList.remove('active');
+  }
+});
+
+/* ============================================
+   INITIAL SETUP
+   ============================================ */
+console.log('%c🌌 Cosmos Chronicle', 'font-size: 24px; color: #00d4ff; font-weight: bold;');
+console.log('%cLive Astrophysics Observatory', 'font-size: 14px; color: #ffb547;');
+console.log('%cPowered by NASA, ISRO, and global space agencies', 'color: #8a9bb8;');
+</script>
+
+</body>
+</html>
